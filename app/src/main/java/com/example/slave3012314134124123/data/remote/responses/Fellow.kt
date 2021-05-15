@@ -1,0 +1,32 @@
+package com.example.slave3012314134124123.data.remote.responses
+
+data class Fellow(
+    val balance: Int,
+    val damage: Int,
+    val damage_quantity: Int,
+    val damage_to_update: Int,
+    val defender_level: Int,
+    val fetter_duration: Int,
+    val fetter_price: Int,
+    val fetter_time: String,
+    val fetter_type: String,
+    val fio: String,
+    val gold: Int,
+    val has_fetter: Boolean,
+    val hp: Int,
+    val id: Int,
+    val income: Int,
+    val job_name: String,
+    val last_update: String,
+    val money_quantity: Int,
+    val money_to_update: Int,
+    val photo: String,
+    val profit: Int,
+    val purchase_price_gm: Int,
+    val purchase_price_sm: Int,
+    val sale_price_gm: Int,
+    val sale_price_sm: Int,
+    val slave_level: Int,
+    val slaves_count: Int,
+    val user_type: String
+)
