@@ -1,9 +1,6 @@
 package com.example.slave3012314134124123.data.remote
 
-import com.example.slave3012314134124123.data.remote.responses.Fellow
-import com.example.slave3012314134124123.data.remote.responses.FriendsList
-import com.example.slave3012314134124123.data.remote.responses.SlavesList
-import com.example.slave3012314134124123.data.remote.responses.User
+import com.example.slave3012314134124123.data.remote.responses.*
 import okhttp3.RequestBody
 import retrofit2.http.*
 
@@ -20,6 +17,11 @@ interface UserApi {
         @Header("Authorization") authHeader : String
 
     ): FriendsList
+
+    @GET("fellow/rating/slavescount")
+    suspend fun getRatingList(
+        @Header("Authorization") authHeader : String
+    ): RatingList
 
     @GET("user/slaves")
     suspend fun getSlavesList(
@@ -43,4 +45,12 @@ interface UserApi {
         @Header("Authorization") authHeader : String,
         @Body requestBody: RequestBody
     ): String
+
+    @POST("user/setjobname")
+    suspend fun postSetJob(
+        @Header("Authorization") authHeader : String,
+        @Body requestBody: RequestBody
+    ): String
+
+
 }

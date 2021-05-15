@@ -21,6 +21,7 @@ import com.example.slave3012314134124123.data.models.YouId
 import com.example.slave3012314134124123.fellow.FellowScreen
 import com.example.slave3012314134124123.friendslist.FriendsListScreen
 import com.example.slave3012314134124123.navigationbar.NavigationBarScreen
+import com.example.slave3012314134124123.ratinglist.RatingListScreen
 import com.example.slave3012314134124123.skaveslist.SlavesListScreen
 import com.example.slave3012314134124123.slaveinfo.SlaveInfoScreen
 import com.example.slave3012314134124123.ui.theme.Slave3012314134124123Theme
@@ -57,6 +58,26 @@ class MainActivity : ComponentActivity() {
                                 FriendsListScreen(navController = navController, youId = youId.youId)
 
                             }
+                        }
+                        composable("rating") {
+
+                            Column() {
+                                RatingListScreen(navController = navController)
+                            }
+                        }
+                        composable(
+                            "user_profile/{id}",
+                            arguments = listOf(
+                                navArgument("id") {
+                                    type = NavType.IntType
+                                }
+                            )) {
+                            val id = remember {
+                                it.arguments?.getInt("id")
+                            }
+                            /*TODO
+                            *  Доделать скрин юзеров (совместить рейтинг и феллоу)*/
+                            FellowScreen(navController = navController, idFellow = id,youId = youId.youId)
                         }
                         composable(
                             "friend_profile/{id}",

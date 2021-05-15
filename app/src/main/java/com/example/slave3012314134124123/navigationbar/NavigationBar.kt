@@ -37,8 +37,10 @@ fun NavigationBarScreen(
                 }) {
                 Text(text = "Друзья")
             }
-            Button(onClick = { /*TODO*/ }) {
-                Text(text = "Cooming soon")
+            Button(onClick = { navController.navigate(
+                "rating"
+            ) }) {
+                Text(text = "Рейтинг")
             }
 
         }

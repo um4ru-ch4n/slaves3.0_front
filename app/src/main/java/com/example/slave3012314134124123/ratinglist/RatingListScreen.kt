@@ -1,5 +1,4 @@
-package com.example.slave3012314134124123.skaveslist
-
+package com.example.slave3012314134124123.ratinglist
 
 import android.util.Log
 import androidx.compose.foundation.background
@@ -8,17 +7,12 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Alignment.Companion.CenterHorizontally
-import androidx.compose.ui.Alignment.Companion.End
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -32,65 +26,71 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.navigate
 import coil.request.ImageRequest
 import com.example.slave3012314134124123.data.models.FriendsListEntry
-import com.example.slave3012314134124123.data.models.SlavesListEntry
-import com.example.slave3012314134124123.data.models.UserEntry
-import com.example.slave3012314134124123.fellow.FellowViewModel
+import com.example.slave3012314134124123.data.models.RatingListEntry
 import com.example.slave3012314134124123.friendslist.FriendsListViewModel
-import com.example.slave3012314134124123.user.UserViewModel
+import com.example.slave3012314134124123.friendslist.MoneyStr
+import com.example.slave3012314134124123.navigationbar.NavigationBarScreen
 import com.google.accompanist.coil.CoilImage
-import kotlinx.coroutines.runBlocking
-
 
 @Composable
-fun SlavesListScreen(
+fun RatingListScreen(
     navController: NavController
 ){
-    SlavesList(navController = navController)
+
+    Column() {
+        NavigationBarScreen(navController = navController)
+        RatingList(navController = navController)
+
+    }
 }
 
 
 
 @Composable
-fun SlavesList(
+fun RatingList(
     navController: NavController,
-    viewModel: SlavesListViewModel = hiltNavGraphViewModel()
+    viewModel: RatingListViewModel = hiltNavGraphViewModel()
 
 ){
-    val slavesList by remember { viewModel.slavesList}
+    val ratingList by remember { viewModel.ratingList}
     val loadError by remember { viewModel.loadError}
     val isLoading by remember { viewModel.isLoading}
 
     LazyColumn(
         contentPadding = PaddingValues(10.dp)
     ){
-        val itemCount = slavesList.size
-        Log.e("Info", "SlaveList ${itemCount}")
+        val itemCount = ratingList.size
 
 
+        Log.e("RATING-SIZE",ratingList.size.toString() )
         var i = 0
-        items(slavesList.size){
-            if(it >= slavesList.size){
-                viewModel.loadSlavesPaginated()
+        items(ratingList.size){
+
+            Log.e("RATING-SIZE",ratingList.size.toString() )
+
+            if(it >= ratingList.size){
+                viewModel.loadRatingListPaginated()
             }
-            Log.e("FIO", slavesList[it].fio)
-            SlavesRow(rowIndex = it, entries = slavesList, navController = navController)
+            Log.e("FIO", ratingList[it].fio)
+            RatingRow(rowIndex = it, entries = ratingList, navController = navController)
 
         }
     }
 
 
+
 }
 
 @Composable
-fun SlavesRow(
+fun RatingRow(
     rowIndex: Int,
-    entries: List<SlavesListEntry>,
+    entries: List<RatingListEntry>,
     navController: NavController
 ){
     Column() {
-        SlavesEntry(
+        RatingEntry(
             entry = entries[rowIndex],
-            navController = navController
+            navController = navController,
         )
         Spacer(modifier = Modifier.height(6.dp))
     }
@@ -98,24 +98,28 @@ fun SlavesRow(
 }
 
 @Composable
-fun SlavesEntry(
-    entry: SlavesListEntry,
+fun RatingEntry(
+    entry: RatingListEntry,
     navController: NavController,
-    viewModel: SlavesListViewModel = hiltNavGraphViewModel(),
+    viewModel: FriendsListViewModel = hiltNavGraphViewModel()
 ) {
-    Column() {
 
-
-        Box(
-            modifier = Modifier.clickable {
+    Surface(
+        shape = RoundedCornerShape(10.dp),
+        modifier = Modifier
+            .shadow(4.dp, RoundedCornerShape(10.dp))
+            .fillMaxWidth()
+            .height(100.dp)
+            .background(Color.White)
+            .clickable {
                 navController.navigate(
-                    "slave_profile/${entry.id}"
-                )
+                    "user_profile/${entry.id_user}",
+                    )
             }
-        ) {
-            Row() {
+    ) {
 
-
+        Row(modifier = Modifier.padding(15.dp)) {
+            Surface(shape = CircleShape) {
                 CoilImage(
                     request = ImageRequest.Builder(LocalContext.current)
                         .data(entry.photo)
@@ -126,8 +130,11 @@ fun SlavesEntry(
                     modifier = Modifier
                         .size(70.dp)
                 )
-                Column() {
+            }
 
+            Box(modifier = Modifier.padding(start = 15.dp)) {
+
+                Column(modifier = Modifier.fillMaxWidth()) {
 
                     Text(
                         text = entry.fio,
@@ -135,17 +142,11 @@ fun SlavesEntry(
                         fontWeight = FontWeight(600),
                         fontFamily = FontFamily.SansSerif
                     )
-                    Text(
-                        text = entry.job_name,
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight(600),
-                        fontFamily = FontFamily.SansSerif
-                    )
+                    Row(modifier = Modifier.fillMaxWidth()) {
+                        Text(text = "Работников ${entry.slaves_count}")
+                    }
                 }
             }
-
         }
-
-
     }
 }

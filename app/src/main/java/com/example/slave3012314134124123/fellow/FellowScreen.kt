@@ -100,7 +100,7 @@ fun FellowScreen (
                 Text(text = "Продать")
             }
 
-        } else {
+        } else if(youId!=userInfo.value.data?.id) {
             Button(onClick = {
 
                 runBlocking {

@@ -68,6 +68,23 @@ class FellowViewModel @Inject constructor(
         return result
     }
 
+    suspend fun setJob(token: String, id: Int, job:String):Resource<String>{
+        val jsonObject = JSONObject()
+        jsonObject.put("job_name", job)
+        jsonObject.put("slave_id", id)
+        val jsonObjectString = jsonObject.toString()
+
+        val buuBodyRequest =
+            jsonObjectString.toRequestBody("application/json".toMediaTypeOrNull())
+
+        val result = repository.postSetJob(
+            "AccessToken ${TOKEN}",
+            buuBodyRequest
+        )
+        Log.e("SETJOB", result.message.toString())
+        return result
+    }
+
 
 }
 

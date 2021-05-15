@@ -5,16 +5,15 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.produceState
+import androidx.compose.material.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltNavGraphViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.navigate
@@ -37,6 +36,9 @@ fun SlaveInfoScreen(
     val slaveInfo = produceState<Resource<Fellow>>(initialValue = Resource.Loading()) {
         value = viewModel.loadFellow("THIS TOKEN", idFellow!!)
     }
+
+    val (showJob,setShowDialog) = remember { mutableStateOf(false) }
+
     Column() {
 
         Text("Это Профиль раба")
@@ -75,14 +77,16 @@ fun SlaveInfoScreen(
 
 
         }
-            //Log.e("SLAVE", "SLAVE ID ${slaveInfo.value.data!!.id}")
+        //Log.e("SLAVE", "SLAVE ID ${slaveInfo.value.data!!.id}")
 
-        if(youId== slaveInfo.value.data?.master_id){
+        if (youId == slaveInfo.value.data?.master_id) {
+
 
             Button(onClick = {
                 runBlocking {
-                    val stringInfo = viewModel.saleFellow("THIS TOKEN",  slaveInfo.value.data!!.id).toString()
-                    Log.e("BUY", stringInfo)
+//                    val stringInfo =
+//                        viewModel.saleFellow("THIS TOKEN", slaveInfo.value.data!!.id).toString()
+//                    Log.e("BUY", stringInfo)
 
                 }
                 navController.navigate("user_profile",)
@@ -90,11 +94,20 @@ fun SlaveInfoScreen(
                 Text(text = "Продать")
             }
 
+
+            Button(onClick = {
+                setShowDialog(true)
+            }) {
+                Text(text = "Назначить")
+            }
         } else {
             Button(onClick = {
 
                 runBlocking {
-                    val stringInfo = viewModel.buyFellow("THIS TOKEN",  slaveInfo.value.data!!.id).message.toString()
+                    val stringInfo = viewModel.buyFellow(
+                        "THIS TOKEN",
+                        slaveInfo.value.data!!.id
+                    ).message.toString()
                     Log.e("BUY", stringInfo)
                 }
                 navController.navigate("user_profile",)
@@ -103,5 +116,52 @@ fun SlaveInfoScreen(
                 Text(text = "Купить")
             }
         }
+
+        FullScreenDialog(navController,viewModel,slaveInfo.value.data?.id,showJob,setShowDialog)
+        
     }
+}
+
+@Composable
+fun FullScreenDialog(navController: NavController, viewModel: FellowViewModel ,id:Int?,showDialog:Boolean,setShowDialog: (Boolean)->Unit) {
+
+    var jobText by remember { mutableStateOf("") }
+    if (showDialog) {
+        Dialog(onDismissRequest =  {} ) {
+            Surface(
+                modifier = Modifier.fillMaxSize(),
+                shape = RoundedCornerShape(16.dp),
+                color = Color.LightGray
+            ) {
+                Box(
+                    contentAlignment = Alignment.Center
+                ) {
+                    Column() {
+
+
+                        TextField(value = jobText, onValueChange = { jobText = it })
+
+                        Button(
+                            onClick = {
+                                setShowDialog(false)
+                                Log.e("SET JOB1", "work")
+                                runBlocking {
+                                    val stringInfo =
+                                        viewModel.setJob("THIS TOKEN", id!!, jobText).toString()
+                                    Log.e("SET JOB2", stringInfo)
+
+                                }
+                                navController.navigate("user_profile",)
+                            },
+                        ) {
+                            Text("Подтвердить")
+                        }
+                    }
+                }
+            }
+        }
+
+
+    }
+    Text(text = "sdfsdf")
 }

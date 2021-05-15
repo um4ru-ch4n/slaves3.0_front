@@ -1,10 +1,7 @@
 package com.example.slave3012314134124123.repository
 
 import com.example.slave3012314134124123.data.remote.UserApi
-import com.example.slave3012314134124123.data.remote.responses.Fellow
-import com.example.slave3012314134124123.data.remote.responses.FriendsList
-import com.example.slave3012314134124123.data.remote.responses.SlavesList
-import com.example.slave3012314134124123.data.remote.responses.User
+import com.example.slave3012314134124123.data.remote.responses.*
 import com.example.slave3012314134124123.util.Resource
 import dagger.hilt.android.scopes.ActivityScoped
 import okhttp3.RequestBody
@@ -45,6 +42,16 @@ class UserRepository @Inject constructor(
 
     }
 
+    suspend fun getRatingList(authHeader: String): Resource<RatingList> {
+        val response = try {
+            api.getRatingList(authHeader)
+        } catch (e: Exception) {
+            return Resource.Error(e.message.toString())
+        }
+        return Resource.Success(response)
+
+    }
+
     suspend fun postFellow(
         authHeader: String,
         requestBody: RequestBody
@@ -68,12 +75,25 @@ class UserRepository @Inject constructor(
         }
         return Resource.Success(response)
     }
+
     suspend fun postSale(
         authHeader: String,
         requestBody: RequestBody
     ): Resource<String>{
         val response = try {
             api.postSale(authHeader, requestBody)
+        } catch (e: Exception){
+            return Resource.Error(e.message.toString())
+        }
+        return Resource.Success(response)
+    }
+
+    suspend fun postSetJob(
+        authHeader: String,
+        requestBody: RequestBody
+    ): Resource<String>{
+        val response = try {
+            api.postSetJob(authHeader, requestBody)
         } catch (e: Exception){
             return Resource.Error(e.message.toString())
         }
