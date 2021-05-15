@@ -1,9 +1,11 @@
 package com.example.slave3012314134124123.slaveinfo
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Button
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -15,16 +17,20 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltNavGraphViewModel
 import androidx.navigation.NavController
+import androidx.navigation.compose.navigate
 import coil.request.ImageRequest
+import com.example.slave3012314134124123.data.models.YouId
 import com.example.slave3012314134124123.data.remote.responses.Fellow
 import com.example.slave3012314134124123.fellow.FellowViewModel
 import com.example.slave3012314134124123.util.Resource
 import com.google.accompanist.coil.CoilImage
+import kotlinx.coroutines.runBlocking
 
 
 @Composable
 fun SlaveInfoScreen(
     viewModel: FellowViewModel = hiltNavGraphViewModel(),
+    youId: Int,
     idFellow: Int?,
     navController: NavController
 ) {
@@ -68,6 +74,34 @@ fun SlaveInfoScreen(
             }
 
 
+        }
+            //Log.e("SLAVE", "SLAVE ID ${slaveInfo.value.data!!.id}")
+
+        if(youId== slaveInfo.value.data?.master_id){
+
+            Button(onClick = {
+                runBlocking {
+                    val stringInfo = viewModel.saleFellow("THIS TOKEN",  slaveInfo.value.data!!.id).toString()
+                    Log.e("BUY", stringInfo)
+
+                }
+                navController.navigate("user_profile",)
+            }) {
+                Text(text = "Продать")
+            }
+
+        } else {
+            Button(onClick = {
+
+                runBlocking {
+                    val stringInfo = viewModel.buyFellow("THIS TOKEN",  slaveInfo.value.data!!.id).message.toString()
+                    Log.e("BUY", stringInfo)
+                }
+                navController.navigate("user_profile",)
+
+            }) {
+                Text(text = "Купить")
+            }
         }
     }
 }

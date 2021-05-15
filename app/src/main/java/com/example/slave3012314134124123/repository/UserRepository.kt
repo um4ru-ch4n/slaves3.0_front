@@ -1,6 +1,5 @@
 package com.example.slave3012314134124123.repository
 
-import com.example.slave3012314134124123.data.models.FellowBodyRequest
 import com.example.slave3012314134124123.data.remote.UserApi
 import com.example.slave3012314134124123.data.remote.responses.Fellow
 import com.example.slave3012314134124123.data.remote.responses.FriendsList
@@ -52,6 +51,29 @@ class UserRepository @Inject constructor(
     ): Resource<Fellow>{
         val response = try {
             api.postFellow(authHeader, requestBody)
+        } catch (e: Exception){
+            return Resource.Error(e.message.toString())
+        }
+        return Resource.Success(response)
+    }
+
+    suspend fun postBuy(
+        authHeader: String,
+        requestBody: RequestBody
+    ): Resource<String>{
+        val response = try {
+            api.postBuy(authHeader, requestBody)
+        } catch (e: Exception){
+            return Resource.Error(e.message.toString())
+        }
+        return Resource.Success(response)
+    }
+    suspend fun postSale(
+        authHeader: String,
+        requestBody: RequestBody
+    ): Resource<String>{
+        val response = try {
+            api.postSale(authHeader, requestBody)
         } catch (e: Exception){
             return Resource.Error(e.message.toString())
         }

@@ -9,6 +9,7 @@ data class FriendsListEntry(
     val defLvl: Int,
     val priceSilver: Int,
     val priceGold: Int,
-    val id: Int
+    val id: Int,
+    val master_Id: Int
 
 )

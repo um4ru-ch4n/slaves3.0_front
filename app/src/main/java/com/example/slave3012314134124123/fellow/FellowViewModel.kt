@@ -19,7 +19,6 @@ class FellowViewModel @Inject constructor(
 )  : ViewModel() {
 
 
-
     suspend fun loadFellow(token: String, id: Int):Resource<Fellow> {
 
         val jsonObject = JSONObject()
@@ -35,5 +34,39 @@ class FellowViewModel @Inject constructor(
         )
         return result
     }
+
+    suspend fun buyFellow(token: String, id: Int):Resource<String>{
+        val jsonObject = JSONObject()
+        jsonObject.put("slave_id", id)
+        val jsonObjectString = jsonObject.toString()
+
+        val buuBodyRequest =
+            jsonObjectString.toRequestBody("application/json".toMediaTypeOrNull())
+
+        val result = repository.postBuy(
+            "AccessToken 9685e571bf1f6aaab7298777c83450a016b7369e6c053a67668e0ed4f8438950de33df6eb5e2fa8afbd04",
+            buuBodyRequest
+        )
+        Log.e("BUY", result.message.toString())
+        return result
+    }
+
+    suspend fun saleFellow(token: String, id: Int):Resource<String>{
+        val jsonObject = JSONObject()
+        jsonObject.put("slave_id", id)
+        val jsonObjectString = jsonObject.toString()
+
+        val buuBodyRequest =
+            jsonObjectString.toRequestBody("application/json".toMediaTypeOrNull())
+
+        val result = repository.postSale(
+            "AccessToken 9685e571bf1f6aaab7298777c83450a016b7369e6c053a67668e0ed4f8438950de33df6eb5e2fa8afbd04",
+            buuBodyRequest
+        )
+        Log.e("SALE", result.message.toString())
+        return result
+    }
+
+
 }
 

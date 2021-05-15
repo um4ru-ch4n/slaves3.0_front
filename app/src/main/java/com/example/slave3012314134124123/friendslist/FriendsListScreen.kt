@@ -33,12 +33,14 @@ import com.google.accompanist.coil.CoilImage
 
 @Composable
 fun FriendsListScreen(
+    youId: Int,
     navController: NavController
 ){
-    Column() {
 
+    Column() {
+        Log.e("IDFList", youId.toString())
         NavigationBarScreen(navController = navController)
-        FriendsList(navController = navController)
+        FriendsList(navController = navController,youId = youId)
 
     }
 }
@@ -47,6 +49,7 @@ fun FriendsListScreen(
 
 @Composable
 fun FriendsList(
+    youId: Int,
     navController: NavController,
     viewModel: FriendsListViewModel = hiltNavGraphViewModel()
 
@@ -68,7 +71,7 @@ fun FriendsList(
                 viewModel.loadFriendsPaginated()
             }
             Log.e("FIO", friendsList[it].fio)
-            FriendsRow(rowIndex = it, entries = friendsList, navController = navController)
+            FriendsRow(rowIndex = it, entries = friendsList, navController = navController, youId = youId)
 
         }
 
@@ -90,6 +93,7 @@ fun FriendsList(
 
 @Composable
 fun FriendsRow(
+    youId: Int,
     rowIndex: Int,
     entries: List<FriendsListEntry>,
     navController: NavController
@@ -97,7 +101,8 @@ fun FriendsRow(
     Column() {
         FriendsEntry(
             entry = entries[rowIndex],
-            navController = navController
+            navController = navController,
+            youId = youId
         )
         Spacer(modifier = Modifier.height(6.dp))
     }
@@ -106,6 +111,7 @@ fun FriendsRow(
 
 @Composable
 fun FriendsEntry(
+    youId: Int,
     entry: FriendsListEntry,
     navController: NavController,
     viewModel: FriendsListViewModel = hiltNavGraphViewModel()
@@ -120,7 +126,8 @@ fun FriendsEntry(
             .background(Color.White)
             .clickable {
                 navController.navigate(
-                    "friend_profile/${entry.id}"
+                    "friend_profile/${entry.id}",
+
                 )
             }
     ) {

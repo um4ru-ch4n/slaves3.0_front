@@ -8,10 +8,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.produceState
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Alignment.Companion.End
@@ -30,15 +27,19 @@ import androidx.navigation.NavController
 import coil.request.ImageRequest
 import com.example.slave3012314134124123.data.models.FriendsListEntry
 import com.example.slave3012314134124123.data.models.UserEntry
+import com.example.slave3012314134124123.data.models.YouId
 import com.example.slave3012314134124123.data.remote.responses.User
 import com.example.slave3012314134124123.navigationbar.NavigationBarScreen
 import com.example.slave3012314134124123.user.UserViewModel
 import com.example.slave3012314134124123.util.Resource
 import com.google.accompanist.coil.CoilImage
+import org.w3c.dom.Node
+import kotlin.properties.ReadWriteProperty
 
 
 @Composable
 fun UserScreen(
+    youId: YouId,
     viewModel: UserViewModel = hiltNavGraphViewModel(),
     navController: NavController
 ) {
@@ -46,6 +47,10 @@ fun UserScreen(
     val userInfo = produceState<Resource<User>>(initialValue = Resource.Loading()) {
         value = viewModel.loadUser("THIS TOKEN")
     }
+
+    userInfo.value.data?.let {youId.youId = it.id }
+
+    Log.e("ID-USER", youId.youId.toString() )
 
     userInfo.value.data?.let { Log.e("FIO", it.fio) }
 

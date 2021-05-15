@@ -9,12 +9,15 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navArgument
 import androidx.navigation.compose.rememberNavController
+import com.example.slave3012314134124123.data.models.YouId
 import com.example.slave3012314134124123.fellow.FellowScreen
 import com.example.slave3012314134124123.friendslist.FriendsListScreen
 import com.example.slave3012314134124123.navigationbar.NavigationBarScreen
@@ -33,24 +36,25 @@ class MainActivity : ComponentActivity() {
                 // A surface container using the 'background' color from the theme
                 Surface(color = MaterialTheme.colors.background) {
 
+                    var youId = YouId(0)
                     val navController = rememberNavController()
-                    NavHost(navController = navController, startDestination = "friends_list") {
+                    NavHost(navController = navController, startDestination = "user_profile") {
                         composable("user_profile") {
-                            //UserScreen(navController = navController)
-                            //FriendsListScreen( navController = navController)
+
+
                             Column() {
 
 
-                                UserScreen(navController = navController)
+                                UserScreen(navController = navController, youId = youId)
                                 SlavesListScreen(navController = navController)
                             }
                         }
                         composable("friends_list") {
-                            //UserScreen(navController = navController)
+
                             Column() {
 
 
-                                FriendsListScreen(navController = navController)
+                                FriendsListScreen(navController = navController, youId = youId.youId)
 
                             }
                         }
@@ -64,8 +68,8 @@ class MainActivity : ComponentActivity() {
                             val id = remember {
                                 it.arguments?.getInt("id")
                             }
-                            Log.e("ID", id.toString())
-                            FellowScreen(navController = navController, idFellow = id)
+
+                            FellowScreen(navController = navController, idFellow = id,youId = youId.youId)
                         }
                         composable(
                             "slave_profile/{id}",
@@ -77,8 +81,7 @@ class MainActivity : ComponentActivity() {
                             val id = remember {
                                 it.arguments?.getInt("id")
                             }
-                            Log.e("ID", id.toString())
-                            SlaveInfoScreen(navController = navController, idFellow = id)
+                            SlaveInfoScreen(navController = navController, idFellow = id, youId = youId.youId)
                         }
                     }
                 }

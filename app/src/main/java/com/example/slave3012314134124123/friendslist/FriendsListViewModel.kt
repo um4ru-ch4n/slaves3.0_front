@@ -47,7 +47,8 @@ class FriendsListViewModel @Inject constructor(
                         val silver = entry.purchase_price_sm
                         val gold = entry.purchase_price_gm
                         val id = entry.id
-                        FriendsListEntry(fio, photo, masterFio, slaveLvl,defLvl, silver, gold, id)
+                        val idMaster = entry.master_id
+                        FriendsListEntry(fio, photo, masterFio, slaveLvl,defLvl, silver, gold, id,idMaster)
                     }
                     loadError.value = ""
                     isLoading.value = false

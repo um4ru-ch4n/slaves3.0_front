@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Button
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -33,9 +34,11 @@ import coil.request.ImageRequest
 import com.example.slave3012314134124123.data.models.FriendsListEntry
 import com.example.slave3012314134124123.data.models.SlavesListEntry
 import com.example.slave3012314134124123.data.models.UserEntry
+import com.example.slave3012314134124123.fellow.FellowViewModel
 import com.example.slave3012314134124123.friendslist.FriendsListViewModel
 import com.example.slave3012314134124123.user.UserViewModel
 import com.google.accompanist.coil.CoilImage
+import kotlinx.coroutines.runBlocking
 
 
 @Composable
@@ -98,30 +101,36 @@ fun SlavesRow(
 fun SlavesEntry(
     entry: SlavesListEntry,
     navController: NavController,
-    viewModel: SlavesListViewModel = hiltNavGraphViewModel()
+    viewModel: SlavesListViewModel = hiltNavGraphViewModel(),
 ) {
-    Box(
-        modifier = Modifier.clickable {
-            navController.navigate(
-                "slave_profile/${entry.id}"
+    Column() {
+
+
+        Box(
+            modifier = Modifier.clickable {
+                navController.navigate(
+                    "slave_profile/${entry.id}"
+                )
+            }
+        ) {
+            CoilImage(
+                request = ImageRequest.Builder(LocalContext.current)
+                    .data(entry.photo)
+                    .target()
+                    .build(),
+                contentDescription = entry.fio,
+                fadeIn = true,
+                modifier = Modifier
+                    .size(70.dp)
+            )
+            Text(
+                text = entry.fio,
+                fontSize = 18.sp,
+                fontWeight = FontWeight(600),
+                fontFamily = FontFamily.SansSerif
             )
         }
-    ) {
-        CoilImage(
-            request = ImageRequest.Builder(LocalContext.current)
-                .data(entry.photo)
-                .target()
-                .build(),
-            contentDescription = entry.fio,
-            fadeIn = true,
-            modifier = Modifier
-                .size(70.dp)
-        )
-        Text(
-            text = entry.fio,
-            fontSize = 18.sp,
-            fontWeight = FontWeight(600),
-            fontFamily = FontFamily.SansSerif
-        )
+
+
     }
 }

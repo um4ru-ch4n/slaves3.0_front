@@ -18,6 +18,7 @@ data class Fellow(
     val income: Int,
     val job_name: String,
     val last_update: String,
+    val master_id: Int,
     val money_quantity: Int,
     val money_to_update: Int,
     val photo: String,
