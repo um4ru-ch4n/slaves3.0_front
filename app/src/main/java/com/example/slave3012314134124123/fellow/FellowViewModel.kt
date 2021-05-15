@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.example.slave3012314134124123.data.remote.responses.Fellow
 import com.example.slave3012314134124123.repository.UserRepository
+import com.example.slave3012314134124123.util.Constants.TOKEN
 import com.example.slave3012314134124123.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -29,7 +30,7 @@ class FellowViewModel @Inject constructor(
             jsonObjectString.toRequestBody("application/json".toMediaTypeOrNull())
 
         val result = repository.postFellow(
-            "AccessToken 9685e571bf1f6aaab7298777c83450a016b7369e6c053a67668e0ed4f8438950de33df6eb5e2fa8afbd04",
+            "AccessToken ${TOKEN}",
             fellowBodyRequest
         )
         return result
@@ -44,7 +45,7 @@ class FellowViewModel @Inject constructor(
             jsonObjectString.toRequestBody("application/json".toMediaTypeOrNull())
 
         val result = repository.postBuy(
-            "AccessToken 9685e571bf1f6aaab7298777c83450a016b7369e6c053a67668e0ed4f8438950de33df6eb5e2fa8afbd04",
+            "AccessToken ${TOKEN}",
             buuBodyRequest
         )
         Log.e("BUY", result.message.toString())
@@ -60,7 +61,7 @@ class FellowViewModel @Inject constructor(
             jsonObjectString.toRequestBody("application/json".toMediaTypeOrNull())
 
         val result = repository.postSale(
-            "AccessToken 9685e571bf1f6aaab7298777c83450a016b7369e6c053a67668e0ed4f8438950de33df6eb5e2fa8afbd04",
+            "AccessToken ${TOKEN}",
             buuBodyRequest
         )
         Log.e("SALE", result.message.toString())

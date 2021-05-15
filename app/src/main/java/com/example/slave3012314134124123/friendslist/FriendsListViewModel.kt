@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.slave3012314134124123.data.models.FriendsListEntry
 import com.example.slave3012314134124123.data.remote.UserApi
 import com.example.slave3012314134124123.repository.UserRepository
+import com.example.slave3012314134124123.util.Constants
 import com.example.slave3012314134124123.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -34,7 +35,7 @@ class FriendsListViewModel @Inject constructor(
         viewModelScope.launch {
             isLoading.value = true
             val result =
-                repository.getFriendsList("AccessToken 9685e571bf1f6aaab7298777c83450a016b7369e6c053a67668e0ed4f8438950de33df6eb5e2fa8afbd04")
+                repository.getFriendsList("AccessToken ${Constants.TOKEN}")
             when (result) {
                 is Resource.Success -> {
 
