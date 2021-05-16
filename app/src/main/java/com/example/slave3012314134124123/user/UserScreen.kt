@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -30,6 +31,7 @@ import com.example.slave3012314134124123.data.models.UserEntry
 import com.example.slave3012314134124123.data.models.YouId
 import com.example.slave3012314134124123.data.remote.responses.User
 import com.example.slave3012314134124123.navigationbar.NavigationBarScreen
+import com.example.slave3012314134124123.skaveslist.SlavesListScreen
 import com.example.slave3012314134124123.user.UserViewModel
 import com.example.slave3012314134124123.util.Resource
 import com.google.accompanist.coil.CoilImage
@@ -48,50 +50,92 @@ fun UserScreen(
         value = viewModel.loadUser("THIS TOKEN")
     }
 
-    userInfo.value.data?.let {youId.youId = it.id }
-
-    Log.e("ID-USER", youId.youId.toString() )
-
-    userInfo.value.data?.let { Log.e("FIO", it.fio) }
+    userInfo.value.data?.let { youId.youId = it.id }
 
     Column() {
-        NavigationBarScreen(navController = navController)
-        userInfo.value.data?.let { MoneyBar(silver = it.balance, gold = it.gold, income = it.income) }
+
 
         Surface(
-            shape = RoundedCornerShape(10.dp),
+            shape = CutCornerShape(10.dp),
             modifier = androidx.compose.ui.Modifier
-                .shadow(4.dp, RoundedCornerShape(10.dp))
+                .shadow(4.dp, CutCornerShape(10.dp))
                 .fillMaxWidth()
-                .height(100.dp)
+                .fillMaxHeight()
+                //.height(135.dp)
                 .background(Color.White)
+                .padding(top = 5.dp)
         ) {
-            Row(modifier = androidx.compose.ui.Modifier.padding(15.dp)) {
-                Surface(shape = CircleShape) {
 
-                    CoilImage(
-                        request = ImageRequest.Builder(LocalContext.current)
-                            .data(userInfo.value.data?.photo)
-                            .target()
-                            .build(),
-                        contentDescription = userInfo.value.data?.fio,
-                        fadeIn = true,
-                        modifier = androidx.compose.ui.Modifier
-                            .size(70.dp)
+            Column(
+                modifier = Modifier
+                //.padding(start = 5.dp,end = 5.dp)
+            ) {
+
+
+                userInfo.value.data?.let {
+                    MoneyBar(
+                        silver = it.balance,
+                        gold = it.gold,
+                        income = it.income
                     )
-
                 }
-                Box(modifier = androidx.compose.ui.Modifier.padding(start = 15.dp)) {
+                Surface(
+                    shape = RoundedCornerShape(10.dp),
+                    modifier = Modifier
+                        .shadow(4.dp, RoundedCornerShape(10.dp))
+                        .fillMaxWidth()
+                        .height(100.dp)
+                        .background(Color.White)
 
-                    Column(modifier = androidx.compose.ui.Modifier.fillMaxWidth()) {
-                        userInfo.value.data?.let { Text(text = it.fio) }
+                ) {
+                    Row(modifier = androidx.compose.ui.Modifier.padding(15.dp)) {
+                        Surface(shape = CircleShape) {
+                            CoilImage(
+                                request = ImageRequest.Builder(LocalContext.current)
+                                    .data(userInfo.value.data?.photo)
+                                    .target()
+                                    .build(),
+                                contentDescription = userInfo.value.data?.fio,
+                                fadeIn = true,
+                                modifier = androidx.compose.ui.Modifier
+                                    .size(70.dp)
+                            )
+
+                        }
+                        Box(modifier = androidx.compose.ui.Modifier.padding(start = 15.dp)) {
+                            Column(modifier = androidx.compose.ui.Modifier.fillMaxWidth()) {
+                                userInfo.value.data?.let {
+                                    Text(
+                                        text = it.fio,
+                                        fontWeight = FontWeight(700),
+                                        fontFamily = FontFamily.SansSerif,
+                                        fontSize = 18.sp
+                                    )
+                                }
+                                userInfo.value.data?.let {
+                                    Text(
+                                        text = "Босс ${it.master_id}",
+                                        fontWeight = FontWeight(500),
+                                        fontFamily = FontFamily.SansSerif,
+                                    )
+                                }
+                                userInfo.value.data?.let {
+                                    Text(
+                                        text = "Работников ${it.slaves_count}",
+                                        fontWeight = FontWeight(500),
+                                        fontFamily = FontFamily.SansSerif,
+                                    )
+                                }
+                            }
+                        }
                     }
                 }
+
+                SlavesListScreen(navController = navController)
             }
-
-
         }
     }
+
 }
 
 @Composable
@@ -100,7 +144,7 @@ fun MoneyBar(silver:Int, gold:Int, income:Int){
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(5.dp),
+            .padding(bottom = 6.dp, top = 4.dp),
 
     ) {
 

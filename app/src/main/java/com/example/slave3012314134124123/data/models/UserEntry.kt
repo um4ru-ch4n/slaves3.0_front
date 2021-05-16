@@ -7,6 +7,7 @@ data class UserEntry(
     val sivler: Int,
     val gold: Int,
     val income: Int,
-    val slaves_count: Int
+    val slaves_count: Int,
+    val master_id: Int
 
 )

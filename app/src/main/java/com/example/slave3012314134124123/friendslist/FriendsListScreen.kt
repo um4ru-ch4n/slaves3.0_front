@@ -38,8 +38,6 @@ fun FriendsListScreen(
 ){
 
     Column() {
-        Log.e("IDFList", youId.toString())
-        NavigationBarScreen(navController = navController)
         FriendsList(navController = navController,youId = youId)
 
     }
@@ -157,26 +155,30 @@ fun FriendsEntry(
                         fontFamily = FontFamily.SansSerif
                     )
                     Row(modifier = Modifier.fillMaxWidth()) {
-                        Text(text = "Владелец ${if (entry.masterFio == "") "Нет" else entry.masterFio} ")
+                        Text(
+                            text = "Владелец ${if (entry.masterFio == "") "Нет" else entry.masterFio} ",
+                            fontWeight = FontWeight(500),
+                            fontFamily = FontFamily.SansSerif,
+                        )
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.End
                         ) {
                             Text(
-                                text = "lvl ${entry.slaveLvl.toString()}",
+                                text = "${entry.slaveLvl.toString()} lvl",
                                 color = Color.Blue,
                                 textAlign = TextAlign.End
                             )
                         }
                     }
                     Row(modifier = Modifier.fillMaxWidth()) {
-                        MoneyStr(silver = entry.priceSilver, gold = entry.priceGold)
+                        MoneyStr(silver = entry.priceSilver, gold = entry.priceGold, info = "Стоимость ")
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.End
                         ) {
                             Text(
-                                text = "lvl ${entry.defLvl.toString()}",
+                                text = "${entry.defLvl.toString()} lvl",
                                 color = Color.Red,
                                 textAlign = TextAlign.End
                             )
@@ -189,11 +191,21 @@ fun FriendsEntry(
 }
 
 @Composable
-fun MoneyStr(silver: Int, gold: Int) {
+fun MoneyStr(info:String, silver: Int, gold: Int) {
     Row {
-        Text(text = "Стоимость ")
-        Text(text = "SM ${silver} ", color = Color(0xFF4169E1))
-        Text(text = "GM ${gold}", color = Color(0xFFFFA500))
+        Text(
+            text = info, fontWeight = FontWeight(500),
+            fontFamily = FontFamily.SansSerif,
+        )
+        Text(
+            text = "SM ${silver} ", color = Color(0xFF4169E1),
+            fontWeight = FontWeight(500),
+            fontFamily = FontFamily.SansSerif,
+        )
+        Text(
+            text = "GM ${gold}", color = Color(0xFFFFA500), fontWeight = FontWeight(500),
+            fontFamily = FontFamily.SansSerif,
+        )
     }
 }
 

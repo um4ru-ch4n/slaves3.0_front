@@ -15,6 +15,7 @@ data class User(
     val has_fetter: Boolean,
     val hp: Int,
     val id: Int,
+    val master_id: Int,
     val income: Int,
     val job_name: String,
     val last_update: String,

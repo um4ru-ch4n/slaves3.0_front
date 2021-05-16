@@ -5,29 +5,38 @@ import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.produceState
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltNavGraphViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.navigate
 import coil.request.ImageRequest
 import com.example.slave3012314134124123.data.models.YouId
 import com.example.slave3012314134124123.data.remote.responses.Fellow
+import com.example.slave3012314134124123.friendslist.MoneyStr
+import com.example.slave3012314134124123.slaveinfo.FullScreenDialog
 import com.example.slave3012314134124123.util.Resource
 import com.google.accompanist.coil.CoilImage
 import kotlinx.coroutines.*
 
 @Composable
 fun FellowScreen (
+    path: String,
     youId :Int,
     viewModel: FellowViewModel = hiltNavGraphViewModel(),
     idFellow: Int?,
@@ -37,25 +46,28 @@ fun FellowScreen (
     val userInfo = produceState<Resource<Fellow>>(initialValue = Resource.Loading()) {
         value = viewModel.loadFellow("THIS TOKEN", idFellow!!)
     }
+    val (showJob, setShowDialog) = remember { mutableStateOf(false) }
+    Surface(
+        shape = CutCornerShape(10.dp),
+        modifier = androidx.compose.ui.Modifier
+            .shadow(4.dp, CutCornerShape(10.dp))
+            .fillMaxWidth()
+            .fillMaxHeight()
+            //.height(135.dp)
+            .background(Color.White)
+            .padding(top = 5.dp)
+    ) {
+        Column() {
+            Surface(
+                shape = RoundedCornerShape(10.dp),
+                modifier = Modifier
+                    .shadow(4.dp, RoundedCornerShape(10.dp))
+                    .fillMaxWidth()
+                    .height(100.dp)
+                    .background(Color.White)
 
-    Column() {
-        Text("Это Профиль Друга")
-
-        Surface(
-            shape = RoundedCornerShape(10.dp),
-            modifier = Modifier
-                .shadow(4.dp, RoundedCornerShape(10.dp))
-                .fillMaxWidth()
-                .height(100.dp)
-                .background(Color.White)
-        ) {
-
-
-
-            Row(modifier = Modifier.padding(15.dp)) {
-                
-                Column() {
-
+            ) {
+                Row(modifier = Modifier.padding(15.dp)) {
 
                     Surface(shape = CircleShape) {
 
@@ -74,51 +86,94 @@ fun FellowScreen (
                     Box(modifier = Modifier.padding(start = 15.dp)) {
 
                         Column(modifier = Modifier.fillMaxWidth()) {
-                            userInfo.value.data?.let { Text(text = it.fio) }
+                            userInfo.value.data?.let {
+                                Text(
+                                    text = it.fio,
+                                    fontWeight = FontWeight(700),
+                                    fontFamily = FontFamily.SansSerif,
+                                    fontSize = 18.sp
+                                )
+                                if (youId == userInfo.value.data?.master_id) {
+                                    Text(
+                                        text = "${if (it.job_name != "") it.job_name else "Нет"}",
+                                        fontWeight = FontWeight(500),
+                                        fontFamily = FontFamily.SansSerif,
+                                    )
+                                    MoneyStr(
+                                        silver = it.sale_price_sm,
+                                        gold = it.sale_price_gm,
+                                        info = "Продажа "
+                                    )
+                                } else {
+                                    Text(
+                                        text = "Босс ${it.master_id}",
+                                        fontWeight = FontWeight(500),
+                                        fontFamily = FontFamily.SansSerif,
+                                        fontSize = 14.sp
+                                    )
+                                    MoneyStr(
+                                        silver = it.purchase_price_sm,
+                                        gold = it.purchase_price_gm,
+                                        info = "Стоимость "
+                                    )
+                                }
+                            }
                         }
                     }
-                    
 
-                    
+                }
+            }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 10.dp),
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
+                if (youId == userInfo.value.data?.master_id && youId != userInfo.value.data?.id) {
+                    Button(onClick = {
+                        runBlocking {
+                            val stringInfo =
+                                viewModel.saleFellow("THIS TOKEN", userInfo.value.data!!.id)
+                                    .toString()
+
+                        }
+                        navController.navigate("user_profile",)
+                    }) {
+                        Text(text = "Продать")
+                    }
+                    Button(onClick = {
+                        setShowDialog(true)
+                    }) {
+                        Text(text = "Назначить")
+                    }
+                } else if(youId != userInfo.value.data?.id){
+                    Button(onClick = {
+
+                        runBlocking {
+                            val stringInfo = viewModel.buyFellow(
+                                "THIS TOKEN",
+                                userInfo.value.data!!.id
+                            ).message.toString()
+                        }
+                        navController.navigate("user_profile",)
+
+                    }) {
+                        Text(text = "Купить")
+                    }
                 }
             }
 
+            FullScreenDialog(
+                navController,
+                viewModel,
+                userInfo.value.data?.id,
+                showJob,
+                setShowDialog
+            )
 
-        }
-
-        if(youId==userInfo.value.data?.master_id){
-            Log.e("sdf", "YEEEEEEEEEEEEEEEEEEEEEEEES ${youId}  ${userInfo.value.data?.master_id}")
-
-            Button(onClick = {
-                runBlocking {
-                    val stringInfo = viewModel.saleFellow("THIS TOKEN", userInfo.value.data!!.id).toString()
-                    Log.e("BUY", stringInfo)
-
-                }
-                navController.navigate("friends_list",)
-            }) {
-                Text(text = "Продать")
-            }
-
-        } else if(youId!=userInfo.value.data?.id) {
-            Button(onClick = {
-
-                runBlocking {
-                    val stringInfo = viewModel.buyFellow("THIS TOKEN", userInfo.value.data!!.id).message.toString()
-                    Log.e("BUY", stringInfo)
-                }
-                navController.navigate("friends_list",)
-
-            }) {
-                Text(text = "Купить")
-            }
         }
     }
 
 }
 
 
-suspend fun BuySlave(id : Int, viewModel: FellowViewModel)
-{
-    viewModel.buyFellow("daf", id)
-}

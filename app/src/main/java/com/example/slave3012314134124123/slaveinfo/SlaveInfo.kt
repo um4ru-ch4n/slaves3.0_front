@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
@@ -12,7 +13,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltNavGraphViewModel
 import androidx.navigation.NavController
@@ -21,6 +26,7 @@ import coil.request.ImageRequest
 import com.example.slave3012314134124123.data.models.YouId
 import com.example.slave3012314134124123.data.remote.responses.Fellow
 import com.example.slave3012314134124123.fellow.FellowViewModel
+import com.example.slave3012314134124123.friendslist.MoneyStr
 import com.example.slave3012314134124123.util.Resource
 import com.google.accompanist.coil.CoilImage
 import kotlinx.coroutines.runBlocking
@@ -37,88 +43,223 @@ fun SlaveInfoScreen(
         value = viewModel.loadFellow("THIS TOKEN", idFellow!!)
     }
 
-    val (showJob,setShowDialog) = remember { mutableStateOf(false) }
+    val (showJob, setShowDialog) = remember { mutableStateOf(false) }
+    Surface(
+        shape = CutCornerShape(10.dp),
+        modifier = androidx.compose.ui.Modifier
+            .shadow(4.dp, CutCornerShape(10.dp))
+            .fillMaxWidth()
+            .fillMaxHeight()
+            //.height(135.dp)
+            .background(Color.White)
+            .padding(top = 5.dp)
+    ) {
+        Column() {
+            Surface(
+                shape = RoundedCornerShape(10.dp),
+                modifier = Modifier
+                    .shadow(4.dp, RoundedCornerShape(10.dp))
+                    .fillMaxWidth()
+                    .height(100.dp)
+                    .background(Color.White)
 
-    Column() {
+            ) {
+                Row(modifier = Modifier.padding(15.dp)) {
+                    Surface(shape = CircleShape) {
 
-        Text("Это Профиль раба")
-        Surface(
-            shape = RoundedCornerShape(10.dp),
-            modifier = Modifier
-                .shadow(4.dp, RoundedCornerShape(10.dp))
+                        CoilImage(
+                            request = ImageRequest.Builder(LocalContext.current)
+                                .data(slaveInfo.value.data?.photo)
+                                .target()
+                                .build(),
+                            contentDescription = slaveInfo.value.data?.fio,
+                            fadeIn = true,
+                            modifier = Modifier
+                                .size(70.dp)
+                        )
+
+                    }
+                    Box(modifier = Modifier.padding(start = 15.dp)) {
+
+                        Column(modifier = Modifier.fillMaxWidth()) {
+                            slaveInfo.value.data?.let {
+                                Text(
+                                    text = it.fio,
+                                    fontWeight = FontWeight(700),
+                                    fontFamily = FontFamily.SansSerif,
+                                    fontSize = 18.sp
+                                )
+                                Text(
+                                    text = "${if (it.job_name != "") it.job_name else "Нет"}",
+                                    fontWeight = FontWeight(500),
+                                    fontFamily = FontFamily.SansSerif,
+                                )
+                                if (youId == slaveInfo.value.data?.master_id) {
+                                    MoneyStr(
+                                        silver = it.sale_price_sm,
+                                        gold = it.sale_price_gm,
+                                        info = "Продажа "
+                                    )
+                                } else {
+                                    MoneyStr(
+                                        silver = it.purchase_price_sm,
+                                        gold = it.purchase_price_gm,
+                                        info = "Стоимость "
+                                    )
+                                }
+                            }
+
+                        }
+                    }
+                }
+
+
+            }
+
+
+            //Log.e("SLAVE", "SLAVE ID ${slaveInfo.value.data!!.id}")
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 10.dp),
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
+                if (youId == slaveInfo.value.data?.master_id) {
+                    Button(onClick = {
+                        runBlocking {
+                            val stringInfo =
+                                viewModel.saleFellow("THIS TOKEN", slaveInfo.value.data!!.id)
+                                    .toString()
+                            Log.e("BUY", stringInfo)
+
+                        }
+                        navController.navigate("user_profile",)
+                    }) {
+                        Text(text = "Продать")
+                    }
+                    Button(onClick = {
+                        setShowDialog(true)
+                    }) {
+                        Text(text = "Назначить")
+                    }
+                } else {
+                    Button(onClick = {
+
+                        runBlocking {
+                            val stringInfo = viewModel.buyFellow(
+                                "THIS TOKEN",
+                                slaveInfo.value.data!!.id
+                            ).message.toString()
+                            Log.e("BUY", stringInfo)
+                        }
+                        navController.navigate("user_profile",)
+
+                    }) {
+                        Text(text = "Купить")
+                    }
+                }
+            }
+            Row( modifier = Modifier
                 .fillMaxWidth()
-                .height(100.dp)
-                .background(Color.White)
-        ) {
+                .padding(top = 10.dp),
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
 
 
-            Row(modifier = Modifier.padding(15.dp)) {
-                Surface(shape = CircleShape) {
+                Surface(
 
-                    CoilImage(
-                        request = ImageRequest.Builder(LocalContext.current)
-                            .data(slaveInfo.value.data?.photo)
-                            .target()
-                            .build(),
-                        contentDescription = slaveInfo.value.data?.fio,
-                        fadeIn = true,
-                        modifier = Modifier
-                            .size(70.dp)
-                    )
+                    shape = RoundedCornerShape(10.dp),
+                    modifier = Modifier
+                        .shadow(4.dp, RoundedCornerShape(10.dp))
+                        .width(150.dp)
+                        .height(200.dp)
+                        .background(Color.White)
+                        .padding(start = 5.dp)
+
+
+                ) {
+                    Column() {
+
+                        Text(
+                            text = "Статистика работника",
+                            textAlign = TextAlign.Center,
+                            fontWeight = FontWeight(700),
+                            fontFamily = FontFamily.SansSerif,
+                            fontSize = 18.sp
+                        )
+                        Spacer(modifier = Modifier.height(15.dp))
+                        Text(
+                            text = "Добыча +${slaveInfo.value.data?.profit}",
+                            fontWeight = FontWeight(500),
+                            fontFamily = FontFamily.SansSerif,
+                            fontSize = 14.sp
+                        )
+                        Text(
+                            text = "Опыт ${slaveInfo.value.data?.money_quantity}",
+                            fontWeight = FontWeight(500),
+                            fontFamily = FontFamily.SansSerif,
+                            fontSize = 14.sp
+                        )
+                    }
 
                 }
-                Box(modifier = Modifier.padding(start = 15.dp)) {
 
-                    Column(modifier = Modifier.fillMaxWidth()) {
-                        slaveInfo.value.data?.let { Text(text = it.fio) }
+                Surface(
+
+                    shape = RoundedCornerShape(10.dp),
+                    modifier = Modifier
+                        .shadow(4.dp, RoundedCornerShape(10.dp))
+                        .width(150.dp)
+                        .height(200.dp)
+                        .background(Color.White)
+                        .padding(start = 5.dp)
+
+
+                ) {
+                    Column() {
+
+
+                        Text(
+                            text = "Статистика гладиатора",
+                            textAlign = TextAlign.Center,
+                            fontWeight = FontWeight(700),
+                            fontFamily = FontFamily.SansSerif,
+                            fontSize = 18.sp
+                        )
+                        Spacer(modifier = Modifier.height(15.dp))
+                        Text(
+                            text = "Здоровье ${slaveInfo.value.data?.hp}",
+                            fontWeight = FontWeight(500),
+                            fontFamily = FontFamily.SansSerif,
+                            fontSize = 14.sp
+                        )
+
+                        Text(
+                            text = "Урон ${slaveInfo.value.data?.damage}",
+                            fontWeight = FontWeight(500),
+                            fontFamily = FontFamily.SansSerif,
+                            fontSize = 14.sp
+                        )
+                        Text(
+                            text = "Опыт ${slaveInfo.value.data?.damage_quantity}",
+                            fontWeight = FontWeight(500),
+                            fontFamily = FontFamily.SansSerif,
+                            fontSize = 14.sp
+                        )
+
                     }
                 }
             }
 
-
+            FullScreenDialog(
+                navController,
+                viewModel,
+                slaveInfo.value.data?.id,
+                showJob,
+                setShowDialog
+            )
         }
-        //Log.e("SLAVE", "SLAVE ID ${slaveInfo.value.data!!.id}")
-
-        if (youId == slaveInfo.value.data?.master_id) {
-
-
-            Button(onClick = {
-                runBlocking {
-                    val stringInfo =
-                        viewModel.saleFellow("THIS TOKEN", slaveInfo.value.data!!.id).toString()
-                    Log.e("BUY", stringInfo)
-
-                }
-                navController.navigate("user_profile",)
-            }) {
-                Text(text = "Продать")
-            }
-
-
-            Button(onClick = {
-                setShowDialog(true)
-            }) {
-                Text(text = "Назначить")
-            }
-        } else {
-            Button(onClick = {
-
-                runBlocking {
-                    val stringInfo = viewModel.buyFellow(
-                        "THIS TOKEN",
-                        slaveInfo.value.data!!.id
-                    ).message.toString()
-                    Log.e("BUY", stringInfo)
-                }
-                navController.navigate("user_profile",)
-
-            }) {
-                Text(text = "Купить")
-            }
-        }
-
-        FullScreenDialog(navController,viewModel,slaveInfo.value.data?.id,showJob,setShowDialog)
-        
     }
 }
 
@@ -163,5 +304,5 @@ fun FullScreenDialog(navController: NavController, viewModel: FellowViewModel ,i
 
 
     }
-    Text(text = "sdfsdf")
 }
+

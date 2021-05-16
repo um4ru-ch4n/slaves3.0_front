@@ -38,7 +38,6 @@ fun RatingListScreen(
 ){
 
     Column() {
-        NavigationBarScreen(navController = navController)
         RatingList(navController = navController)
 
     }

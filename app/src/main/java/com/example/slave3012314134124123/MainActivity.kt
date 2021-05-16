@@ -5,13 +5,17 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -25,6 +29,7 @@ import com.example.slave3012314134124123.ratinglist.RatingListScreen
 import com.example.slave3012314134124123.skaveslist.SlavesListScreen
 import com.example.slave3012314134124123.slaveinfo.SlaveInfoScreen
 import com.example.slave3012314134124123.ui.theme.Slave3012314134124123Theme
+import com.example.slave3012314134124123.user.MoneyBar
 import com.example.slave3012314134124123.user.UserScreen
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -37,77 +42,191 @@ class MainActivity : ComponentActivity() {
                 // A surface container using the 'background' color from the theme
                 Surface(color = MaterialTheme.colors.background) {
 
-                    var youId = YouId(0)
+                    var youId = YouId(0, 0, 0, 0, 0)
                     val navController = rememberNavController()
                     NavHost(navController = navController, startDestination = "user_profile") {
                         composable("user_profile") {
+                            Box(
+                                contentAlignment = Alignment.Center,
+                                modifier = Modifier
+                                    .fillMaxSize()
+
+                            ) {
 
 
-                            Column() {
+                                Box(
+                                    modifier = Modifier
+                                        .align(Alignment.TopCenter)
+                                        .padding(start = 5.dp, end = 5.dp, top = 5.dp)
+                                ) {
+                                    Column() {
+                                        UserScreen(navController = navController, youId = youId)
 
+                                    }
 
-                                UserScreen(navController = navController, youId = youId)
-                                SlavesListScreen(navController = navController)
+                                }
+
+                                Box(
+                                    modifier = Modifier
+                                        .align(Alignment.BottomCenter),
+                                ) {
+                                    NavigationBarScreen(navController = navController)
+                                }
+
                             }
+
                         }
                         composable("friends_list") {
 
-                            Column() {
+                            Box(
+                                contentAlignment = Alignment.Center,
+                                modifier = Modifier
+                                    .fillMaxSize()
 
+                            ) {
 
-                                FriendsListScreen(navController = navController, youId = youId.youId)
+                                Box(
+                                    modifier = Modifier
+                                        .align(Alignment.TopCenter)
+                                        .padding(start = 5.dp, end = 5.dp, top = 5.dp)
+                                ) {
+
+                                    FriendsListScreen(
+                                        navController = navController,
+                                        youId = youId.youId
+                                    )
+                                }
+
+                                Box(
+                                    modifier = Modifier
+                                        .align(Alignment.BottomCenter),
+                                ) {
+                                    NavigationBarScreen(navController = navController)
+                                }
 
                             }
+
                         }
                         composable("rating") {
 
-                            Column() {
-                                RatingListScreen(navController = navController)
-                            }
-                        }
-                        composable(
-                            "user_profile/{id}",
-                            arguments = listOf(
-                                navArgument("id") {
-                                    type = NavType.IntType
+                            Box(
+                                contentAlignment = Alignment.Center,
+                                modifier = Modifier
+                                    .fillMaxSize()
+
+                            ) {
+
+                                Box(
+                                    modifier = Modifier
+                                        .align(Alignment.TopCenter)
+                                        .padding(start = 5.dp, end = 5.dp, top = 5.dp)
+                                ) {
+
+                                    RatingListScreen(navController = navController)
                                 }
-                            )) {
+
+                                Box(
+                                    modifier = Modifier
+                                        .align(Alignment.BottomCenter),
+                                ) {
+                                    NavigationBarScreen(navController = navController)
+                                }
+
+                            }
+
+                        }
+                        composable("user_profile/{id}", arguments = listOf(navArgument("id") {
+                            type = NavType.IntType
+                        })) {
                             val id = remember {
                                 it.arguments?.getInt("id")
                             }
-                            /*TODO
-                            *  Доделать скрин юзеров (совместить рейтинг и феллоу)*/
-                            FellowScreen(navController = navController, idFellow = id,youId = youId.youId)
+                            Box(
+                                contentAlignment = Alignment.Center,
+                                modifier = Modifier
+                                    .fillMaxSize()
+
+                            ) {
+
+                                Box(
+                                    modifier = Modifier
+                                        .align(Alignment.TopCenter)
+                                        .padding(start = 5.dp, end = 5.dp, top = 5.dp)
+                                ) {
+
+                                    FellowScreen(
+                                        navController = navController,
+                                        idFellow = id,
+                                        youId = youId.youId,
+                                        path = "rating"
+                                    )
+                                }
+                            }
+                        }
+                        composable("friend_profile/{id}", arguments = listOf(navArgument("id") {
+                            type = NavType.IntType
+                        })) {
+                            val id = remember {
+                                it.arguments?.getInt("id")
+                            }
+                            Box(
+                                contentAlignment = Alignment.Center,
+                                modifier = Modifier
+                                    .fillMaxSize()
+
+                            ) {
+
+                                Box(
+                                    modifier = Modifier
+                                        .align(Alignment.TopCenter)
+                                        .padding(start = 5.dp, end = 5.dp, top = 5.dp)
+                                ) {
+
+                                    FellowScreen(
+                                        navController = navController,
+                                        idFellow = id,
+                                        youId = youId.youId,
+                                        path = "friends_list"
+                                    )
+                                }
+                            }
                         }
                         composable(
-                            "friend_profile/{id}",
-                            arguments = listOf(
-                                navArgument("id") {
-                                    type = NavType.IntType
-                                }
-                            )) {
+                            "slave_profile/{id}",
+                            arguments = listOf(navArgument("id") {
+                                type = NavType.IntType
+                            })
+                        ) {
                             val id = remember {
                                 it.arguments?.getInt("id")
                             }
 
-                            FellowScreen(navController = navController, idFellow = id,youId = youId.youId)
-                        }
-                        composable(
-                            "slave_profile/{id}",
-                            arguments = listOf(
-                                navArgument("id") {
-                                    type = NavType.IntType
+                            Box(
+                                contentAlignment = Alignment.Center,
+                                modifier = Modifier
+                                    .fillMaxSize()
+
+                            ) {
+                                Box(
+                                    modifier = Modifier
+                                        .align(Alignment.TopCenter)
+                                        .padding(start = 5.dp, end = 5.dp, top = 5.dp)
+                                ) {
+
+                                    SlaveInfoScreen(
+                                        navController = navController,
+                                        idFellow = id,
+                                        youId = youId.youId
+                                    )
                                 }
-                            )) {
-                            val id = remember {
-                                it.arguments?.getInt("id")
                             }
-                            SlaveInfoScreen(navController = navController, idFellow = id, youId = youId.youId)
                         }
                     }
+
                 }
             }
         }
     }
 }
+
 

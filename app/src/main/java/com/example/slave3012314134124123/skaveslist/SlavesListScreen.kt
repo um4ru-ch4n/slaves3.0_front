@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Alignment.Companion.End
 import androidx.compose.ui.Modifier
@@ -67,13 +68,12 @@ fun SlavesList(
         Log.e("Info", "SlaveList ${itemCount}")
 
 
-        var i = 0
         items(slavesList.size){
             if(it >= slavesList.size){
                 viewModel.loadSlavesPaginated()
             }
             Log.e("FIO", slavesList[it].fio)
-            SlavesRow(rowIndex = it, entries = slavesList, navController = navController)
+            SlavesRow(rowIndex = it, entries = slavesList, navController = navController, maxSize = slavesList.size)
 
         }
     }
@@ -84,14 +84,28 @@ fun SlavesList(
 @Composable
 fun SlavesRow(
     rowIndex: Int,
+    maxSize: Int,
     entries: List<SlavesListEntry>,
     navController: NavController
-){
-    Column() {
-        SlavesEntry(
-            entry = entries[rowIndex],
-            navController = navController
-        )
+) {
+    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
+
+        if (rowIndex % 3 == 0) {
+            SlavesEntry(
+                entry = entries[rowIndex],
+                navController = navController
+            )
+            if(maxSize-1>=rowIndex+1)
+            SlavesEntry(
+                entry = entries[rowIndex+1],
+                navController = navController
+            )
+            if(maxSize-1>=rowIndex+2)
+                SlavesEntry(
+                    entry = entries[rowIndex+2],
+                    navController = navController
+                )
+        }
         Spacer(modifier = Modifier.height(6.dp))
     }
 
@@ -103,49 +117,91 @@ fun SlavesEntry(
     navController: NavController,
     viewModel: SlavesListViewModel = hiltNavGraphViewModel(),
 ) {
-    Column() {
+
+    Surface(
+
+        shape = RoundedCornerShape(10.dp),
+        modifier = Modifier
+            .shadow(4.dp, RoundedCornerShape(10.dp))
+            .width(100.dp)
+            .height(170.dp)
+            .background(Color.White),
 
 
+        ) {
         Box(
+
             modifier = Modifier.clickable {
                 navController.navigate(
                     "slave_profile/${entry.id}"
                 )
             }
         ) {
-            Row() {
+            Column() {
 
-
-                CoilImage(
-                    request = ImageRequest.Builder(LocalContext.current)
-                        .data(entry.photo)
-                        .target()
-                        .build(),
-                    contentDescription = entry.fio,
-                    fadeIn = true,
+                Surface(
+                    shape = CircleShape,
                     modifier = Modifier
-                        .size(70.dp)
-                )
-                Column() {
-
-
-                    Text(
-                        text = entry.fio,
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight(600),
-                        fontFamily = FontFamily.SansSerif
-                    )
-                    Text(
-                        text = entry.job_name,
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight(600),
-                        fontFamily = FontFamily.SansSerif
+                        .align(CenterHorizontally)
+                        .padding(top = 10.dp)
+                ) {
+                    CoilImage(
+                        request = ImageRequest.Builder(LocalContext.current)
+                            .data(entry.photo)
+                            .target()
+                            .build(),
+                        contentDescription = entry.fio,
+                        fadeIn = true,
+                        modifier = Modifier
+                            .size(55.dp)
                     )
                 }
+
+
+
+                Text(
+                    text = entry.fio,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight(600),
+                    fontFamily = FontFamily.SansSerif,
+                    textAlign = TextAlign.Center
+                )
+                Row( modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+                    Text(
+                        text = "lvl ${entry.slave_level}",
+                        color = Color.Blue,
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight(500),
+                        fontFamily = FontFamily.SansSerif,
+                    )
+                    Text(
+                        text = "  lvl ${entry.defender_level}",
+                        color = Color.Red,
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight(500),
+                        fontFamily = FontFamily.SansSerif,
+                    )
+                }
+                Text(
+                    text = "+${entry.profit}",
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight(500),
+                    fontFamily = FontFamily.SansSerif,
+                    modifier = Modifier
+                        .align(CenterHorizontally)
+                )
+                Text(
+                    text = "${if (entry.job_name != "") entry.job_name else "Нет"}",
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight(500),
+                    fontFamily = FontFamily.SansSerif,
+                    modifier = Modifier
+                        .align(CenterHorizontally)
+                )
             }
 
-        }
 
+        }
 
     }
 }
