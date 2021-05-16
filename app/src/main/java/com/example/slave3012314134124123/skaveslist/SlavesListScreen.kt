@@ -62,7 +62,9 @@ fun SlavesList(
     val isLoading by remember { viewModel.isLoading}
 
     LazyColumn(
-        contentPadding = PaddingValues(10.dp)
+        contentPadding = PaddingValues(0.dp),
+        modifier = Modifier.fillMaxWidth()
+
     ){
         val itemCount = slavesList.size
         Log.e("Info", "SlaveList ${itemCount}")
@@ -88,28 +90,34 @@ fun SlavesRow(
     entries: List<SlavesListEntry>,
     navController: NavController
 ) {
-    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
+
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceEvenly
+    ) {
 
         if (rowIndex % 3 == 0) {
             SlavesEntry(
                 entry = entries[rowIndex],
                 navController = navController
             )
-            if(maxSize-1>=rowIndex+1)
-            SlavesEntry(
-                entry = entries[rowIndex+1],
-                navController = navController
-            )
-            if(maxSize-1>=rowIndex+2)
+            if (maxSize - 1 >= rowIndex + 1)
                 SlavesEntry(
-                    entry = entries[rowIndex+2],
+                    entry = entries[rowIndex + 1],
+                    navController = navController
+                )
+            if (maxSize - 1 >= rowIndex + 2)
+                SlavesEntry(
+                    entry = entries[rowIndex + 2],
                     navController = navController
                 )
         }
-        Spacer(modifier = Modifier.height(6.dp))
-    }
 
+    }
+    Spacer(modifier = Modifier.height(6.dp))
 }
+
+
 
 @Composable
 fun SlavesEntry(
@@ -130,7 +138,6 @@ fun SlavesEntry(
 
         ) {
         Box(
-
             modifier = Modifier.clickable {
                 navController.navigate(
                     "slave_profile/${entry.id}"

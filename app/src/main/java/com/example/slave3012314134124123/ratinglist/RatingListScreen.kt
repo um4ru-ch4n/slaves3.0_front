@@ -138,11 +138,14 @@ fun RatingEntry(
                     Text(
                         text = entry.fio,
                         fontSize = 18.sp,
-                        fontWeight = FontWeight(600),
+                        fontWeight = FontWeight(700),
                         fontFamily = FontFamily.SansSerif
                     )
                     Row(modifier = Modifier.fillMaxWidth()) {
-                        Text(text = "Работников ${entry.slaves_count}")
+                        Text(text = "Работников ${entry.slaves_count}",
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight(600),
+                            fontFamily = FontFamily.SansSerif)
                     }
                 }
             }

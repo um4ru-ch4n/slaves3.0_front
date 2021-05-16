@@ -36,6 +36,7 @@ import kotlinx.coroutines.*
 
 @Composable
 fun FellowScreen (
+    masterFio: String,
     path: String,
     youId :Int,
     viewModel: FellowViewModel = hiltNavGraphViewModel(),
@@ -107,7 +108,7 @@ fun FellowScreen (
                                     )
                                 } else {
                                     Text(
-                                        text = "Босс ${it.master_id}",
+                                        text = "Босс ${if(masterFio!="") masterFio else "отсутствует"}",
                                         fontWeight = FontWeight(500),
                                         fontFamily = FontFamily.SansSerif,
                                         fontSize = 14.sp

@@ -33,12 +33,14 @@ import com.google.accompanist.coil.CoilImage
 
 @Composable
 fun FriendsListScreen(
+    masterFio: String,
+    setMasterFio: (String)->Unit,
     youId: Int,
     navController: NavController
 ){
 
     Column() {
-        FriendsList(navController = navController,youId = youId)
+        FriendsList(navController = navController,youId = youId, setMasterFio = setMasterFio, masterFio = masterFio)
 
     }
 }
@@ -47,6 +49,8 @@ fun FriendsListScreen(
 
 @Composable
 fun FriendsList(
+    masterFio: String,
+    setMasterFio: (String)->Unit,
     youId: Int,
     navController: NavController,
     viewModel: FriendsListViewModel = hiltNavGraphViewModel()
@@ -69,7 +73,7 @@ fun FriendsList(
                 viewModel.loadFriendsPaginated()
             }
             Log.e("FIO", friendsList[it].fio)
-            FriendsRow(rowIndex = it, entries = friendsList, navController = navController, youId = youId)
+            FriendsRow(rowIndex = it, entries = friendsList, navController = navController, youId = youId, masterFio = masterFio,setMasterFio = setMasterFio )
 
         }
 
@@ -91,16 +95,20 @@ fun FriendsList(
 
 @Composable
 fun FriendsRow(
+    masterFio: String,
     youId: Int,
     rowIndex: Int,
     entries: List<FriendsListEntry>,
-    navController: NavController
+    navController: NavController,
+    setMasterFio: (String)->Unit
 ){
     Column() {
         FriendsEntry(
             entry = entries[rowIndex],
             navController = navController,
-            youId = youId
+            youId = youId,
+            masterFio = masterFio,
+            setMasterFio = setMasterFio
         )
         Spacer(modifier = Modifier.height(6.dp))
     }
@@ -109,6 +117,8 @@ fun FriendsRow(
 
 @Composable
 fun FriendsEntry(
+    masterFio: String,
+    setMasterFio: (String)->Unit,
     youId: Int,
     entry: FriendsListEntry,
     navController: NavController,
@@ -127,6 +137,7 @@ fun FriendsEntry(
                     "friend_profile/${entry.id}",
 
                 )
+                setMasterFio(entry.masterFio)
             }
     ) {
 

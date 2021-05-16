@@ -43,6 +43,7 @@ class MainActivity : ComponentActivity() {
                 Surface(color = MaterialTheme.colors.background) {
 
                     var youId = YouId(0, 0, 0, 0, 0)
+                    val (masterFio, setMasterFio) = remember { mutableStateOf("") }
                     val navController = rememberNavController()
                     NavHost(navController = navController, startDestination = "user_profile") {
                         composable("user_profile") {
@@ -93,7 +94,9 @@ class MainActivity : ComponentActivity() {
 
                                     FriendsListScreen(
                                         navController = navController,
-                                        youId = youId.youId
+                                        youId = youId.youId,
+                                        masterFio = masterFio,
+                                        setMasterFio = setMasterFio
                                     )
                                 }
 
@@ -135,9 +138,11 @@ class MainActivity : ComponentActivity() {
                             }
 
                         }
-                        composable("user_profile/{id}", arguments = listOf(navArgument("id") {
-                            type = NavType.IntType
-                        })) {
+                        composable("user_profile/{id}", arguments = listOf(
+                            navArgument("id")
+                            {
+                                type = NavType.IntType
+                            })) {
                             val id = remember {
                                 it.arguments?.getInt("id")
                             }
@@ -158,7 +163,8 @@ class MainActivity : ComponentActivity() {
                                         navController = navController,
                                         idFellow = id,
                                         youId = youId.youId,
-                                        path = "rating"
+                                        path = "rating",
+                                        masterFio = masterFio
                                     )
                                 }
                             }
@@ -186,7 +192,8 @@ class MainActivity : ComponentActivity() {
                                         navController = navController,
                                         idFellow = id,
                                         youId = youId.youId,
-                                        path = "friends_list"
+                                        path = "friends_list",
+                                        masterFio = masterFio
                                     )
                                 }
                             }
@@ -222,7 +229,6 @@ class MainActivity : ComponentActivity() {
                             }
                         }
                     }
-
                 }
             }
         }
