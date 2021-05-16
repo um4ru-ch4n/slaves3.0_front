@@ -6,6 +6,9 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -15,6 +18,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -90,9 +95,10 @@ fun SlaveInfoScreen(
                                     fontSize = 18.sp
                                 )
                                 Text(
-                                    text = "${if (it.job_name != "") it.job_name else "Нет"}",
+                                    text = "Работа ${if (it.job_name != "") it.job_name else "отсутствует"}",
                                     fontWeight = FontWeight(500),
                                     fontFamily = FontFamily.SansSerif,
+                                    fontSize = 14.sp
                                 )
                                 if (youId == slaveInfo.value.data?.master_id) {
                                     MoneyStr(
@@ -267,42 +273,95 @@ fun SlaveInfoScreen(
 fun FullScreenDialog(navController: NavController, viewModel: FellowViewModel ,id:Int?,showDialog:Boolean,setShowDialog: (Boolean)->Unit) {
 
     var jobText by remember { mutableStateOf("") }
+
+
+
     if (showDialog) {
-        Dialog(onDismissRequest =  {} ) {
-            Surface(
-                modifier = Modifier.fillMaxSize(),
-                shape = RoundedCornerShape(16.dp),
-                color = Color.LightGray
+        Dialog(onDismissRequest = {}) {
+
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .width(300.dp)
+                    .height(160.dp)
+                    .background(Color.White)
+                    .padding(bottom = 7.dp)
             ) {
+
                 Box(
-                    contentAlignment = Alignment.Center
+                    modifier = Modifier
+                        .align(Alignment.TopCenter)
+                        .padding(start = 5.dp, end = 5.dp, top = 5.dp)
+
                 ) {
-                    Column() {
+                    Text(
+                        text = "Установите работу", fontWeight = FontWeight(600),
+                        fontFamily = FontFamily.SansSerif,
+                        fontSize = 18.sp,
+                    )
+
+                }
+
+                Box(
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        //.padding(start = 5.dp, end = 5.dp, top = 5.dp)
+
+                ) {
+
+                    OutlinedTextField(
+                        value = jobText,
+                        maxLines = 1,
+
+                        onValueChange = { jobText = it },
 
 
-                        TextField(value = jobText, onValueChange = { jobText = it })
 
+                        //modifier = Modifier.height(40.dp)
+                    )
+
+                }
+
+                Box(
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .padding(start = 5.dp, end = 5.dp, top = 5.dp)
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceEvenly
+                    ) {
                         Button(
                             onClick = {
                                 setShowDialog(false)
                                 Log.e("SET JOB1", "work")
                                 runBlocking {
                                     val stringInfo =
-                                        viewModel.setJob("THIS TOKEN", id!!, jobText).toString()
+                                        viewModel.setJob("THIS TOKEN", id!!, jobText)
+                                            .toString()
                                     Log.e("SET JOB2", stringInfo)
 
                                 }
                                 navController.navigate("user_profile",)
                             },
                         ) {
-                            Text("Подтвердить")
+                            Text("Ок")
+                        }
+                        Button(
+                            onClick = {
+                                setShowDialog(false)
+                                navController.navigate("user_profile",)
+                            },
+                        ) {
+                            Text("Отмена")
                         }
                     }
                 }
             }
         }
-
-
     }
 }
+
+
+
 

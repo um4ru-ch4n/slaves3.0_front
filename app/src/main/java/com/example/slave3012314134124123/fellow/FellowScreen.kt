@@ -95,9 +95,10 @@ fun FellowScreen (
                                 )
                                 if (youId == userInfo.value.data?.master_id) {
                                     Text(
-                                        text = "${if (it.job_name != "") it.job_name else "Нет"}",
+                                        text = "Работа ${if (it.job_name != "") it.job_name else "отсутствует"}",
                                         fontWeight = FontWeight(500),
                                         fontFamily = FontFamily.SansSerif,
+                                        fontSize = 14.sp
                                     )
                                     MoneyStr(
                                         silver = it.sale_price_sm,

@@ -156,9 +156,10 @@ fun FriendsEntry(
                     )
                     Row(modifier = Modifier.fillMaxWidth()) {
                         Text(
-                            text = "Владелец ${if (entry.masterFio == "") "Нет" else entry.masterFio} ",
+                            text = "Босс ${if (entry.masterFio == "") "отсутствует" else entry.masterFio} ",
                             fontWeight = FontWeight(500),
                             fontFamily = FontFamily.SansSerif,
+                            fontSize = 14.sp
                         )
                         Row(
                             modifier = Modifier.fillMaxWidth(),
@@ -196,15 +197,18 @@ fun MoneyStr(info:String, silver: Int, gold: Int) {
         Text(
             text = info, fontWeight = FontWeight(500),
             fontFamily = FontFamily.SansSerif,
+            fontSize = 14.sp
         )
         Text(
             text = "SM ${silver} ", color = Color(0xFF4169E1),
             fontWeight = FontWeight(500),
             fontFamily = FontFamily.SansSerif,
+            fontSize = 14.sp
         )
         Text(
             text = "GM ${gold}", color = Color(0xFFFFA500), fontWeight = FontWeight(500),
             fontFamily = FontFamily.SansSerif,
+            fontSize = 14.sp
         )
     }
 }
