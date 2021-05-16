@@ -84,9 +84,9 @@ fun SlaveInfoScreen(
 
             Button(onClick = {
                 runBlocking {
-//                    val stringInfo =
-//                        viewModel.saleFellow("THIS TOKEN", slaveInfo.value.data!!.id).toString()
-//                    Log.e("BUY", stringInfo)
+                    val stringInfo =
+                        viewModel.saleFellow("THIS TOKEN", slaveInfo.value.data!!.id).toString()
+                    Log.e("BUY", stringInfo)
 
                 }
                 navController.navigate("user_profile",)
