@@ -1,5 +1,6 @@
 package com.example.slave3012314134124123.user
 
+import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -20,7 +21,9 @@ class UserViewModel @Inject constructor(
 
 
     suspend fun loadUser(token:String):Resource<User>{
-        return repository.getUser("AccessToken ${Constants.TOKEN}")
+        val result = repository.getUser("AccessToken ${Constants.TOKEN}")
+        Log.e("USER", result.message.toString())
+        return result
 
     }
 

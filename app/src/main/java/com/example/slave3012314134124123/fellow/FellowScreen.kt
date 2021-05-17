@@ -1,6 +1,5 @@
 package com.example.slave3012314134124123.fellow
 
-import android.telecom.Call
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -26,7 +25,7 @@ import androidx.hilt.navigation.compose.hiltNavGraphViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.navigate
 import coil.request.ImageRequest
-import com.example.slave3012314134124123.data.models.YouId
+import com.example.slave3012314134124123.data.models.Сache
 import com.example.slave3012314134124123.data.remote.responses.Fellow
 import com.example.slave3012314134124123.friendslist.MoneyStr
 import com.example.slave3012314134124123.slaveinfo.FullScreenDialog
@@ -36,9 +35,8 @@ import kotlinx.coroutines.*
 
 @Composable
 fun FellowScreen (
-    masterFio: String,
     path: String,
-    youId :Int,
+    сache: Сache,
     viewModel: FellowViewModel = hiltNavGraphViewModel(),
     idFellow: Int?,
     navController: NavController
@@ -48,6 +46,9 @@ fun FellowScreen (
         value = viewModel.loadFellow("THIS TOKEN", idFellow!!)
     }
     val (showJob, setShowDialog) = remember { mutableStateOf(false) }
+
+    Log.e("FELLOW-SCREEN", "MASTER: ${сache.master_id} YOU: ${сache.user_id}" )
+
     Surface(
         shape = CutCornerShape(10.dp),
         modifier = androidx.compose.ui.Modifier
@@ -94,7 +95,7 @@ fun FellowScreen (
                                     fontFamily = FontFamily.SansSerif,
                                     fontSize = 18.sp
                                 )
-                                if (youId == userInfo.value.data?.master_id) {
+                                if (сache.user_id == сache.master_id) {
                                     Text(
                                         text = "Работа ${if (it.job_name != "") it.job_name else "отсутствует"}",
                                         fontWeight = FontWeight(500),
@@ -108,7 +109,7 @@ fun FellowScreen (
                                     )
                                 } else {
                                     Text(
-                                        text = "Босс ${if(masterFio!="") masterFio else "отсутствует"}",
+                                        text = "Босс ${if(сache.master_fio!="") сache.master_fio else "отсутствует"}",
                                         fontWeight = FontWeight(500),
                                         fontFamily = FontFamily.SansSerif,
                                         fontSize = 14.sp
@@ -131,7 +132,7 @@ fun FellowScreen (
                     .padding(top = 10.dp),
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                if (youId == userInfo.value.data?.master_id && youId != userInfo.value.data?.id) {
+                if (сache.user_id == сache.master_id && сache.user_id != userInfo.value.data?.id) {
                     Button(onClick = {
                         runBlocking {
                             val stringInfo =
@@ -139,7 +140,7 @@ fun FellowScreen (
                                     .toString()
 
                         }
-                        navController.navigate("user_profile",)
+                        navController.navigate(path,)
                     }) {
                         Text(text = "Продать")
                     }
@@ -148,7 +149,7 @@ fun FellowScreen (
                     }) {
                         Text(text = "Назначить")
                     }
-                } else if(youId != userInfo.value.data?.id){
+                } else if(сache.user_id != userInfo.value.data?.id){
                     Button(onClick = {
 
                         runBlocking {
@@ -157,7 +158,7 @@ fun FellowScreen (
                                 userInfo.value.data!!.id
                             ).message.toString()
                         }
-                        navController.navigate("user_profile",)
+                        navController.navigate(path,)
 
                     }) {
                         Text(text = "Купить")

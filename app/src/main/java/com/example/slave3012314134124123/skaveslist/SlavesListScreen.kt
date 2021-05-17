@@ -8,18 +8,13 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
-import androidx.compose.ui.Alignment.Companion.End
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -32,18 +27,14 @@ import androidx.hilt.navigation.compose.hiltNavGraphViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.navigate
 import coil.request.ImageRequest
-import com.example.slave3012314134124123.data.models.FriendsListEntry
+import com.example.slave3012314134124123.data.models.Сache
 import com.example.slave3012314134124123.data.models.SlavesListEntry
-import com.example.slave3012314134124123.data.models.UserEntry
-import com.example.slave3012314134124123.fellow.FellowViewModel
-import com.example.slave3012314134124123.friendslist.FriendsListViewModel
-import com.example.slave3012314134124123.user.UserViewModel
 import com.google.accompanist.coil.CoilImage
-import kotlinx.coroutines.runBlocking
 
 
 @Composable
 fun SlavesListScreen(
+    сache: Сache,
     navController: NavController
 ){
     SlavesList(navController = navController)
@@ -79,8 +70,6 @@ fun SlavesList(
 
         }
     }
-
-
 }
 
 @Composable

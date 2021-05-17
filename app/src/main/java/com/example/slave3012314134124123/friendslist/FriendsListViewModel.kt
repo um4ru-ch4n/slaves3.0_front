@@ -36,6 +36,7 @@ class FriendsListViewModel @Inject constructor(
             isLoading.value = true
             val result =
                 repository.getFriendsList("AccessToken ${Constants.TOKEN}")
+            Log.e("FRIEND_LIST", result.message.toString())
             when (result) {
                 is Resource.Success -> {
 

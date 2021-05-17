@@ -34,6 +34,7 @@ class SlavesListViewModel  @Inject constructor(
             isLoading.value = true
             val result =
                 repository.getSlavesList("AccessToken ${Constants.TOKEN}")
+            Log.e("SLAVE-LIST", result.message.toString())
             when (result) {
                 is Resource.Success -> {
 

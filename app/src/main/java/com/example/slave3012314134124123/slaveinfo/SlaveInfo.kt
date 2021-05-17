@@ -6,9 +6,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -18,8 +15,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -28,7 +23,7 @@ import androidx.hilt.navigation.compose.hiltNavGraphViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.navigate
 import coil.request.ImageRequest
-import com.example.slave3012314134124123.data.models.YouId
+import com.example.slave3012314134124123.data.models.Сache
 import com.example.slave3012314134124123.data.remote.responses.Fellow
 import com.example.slave3012314134124123.fellow.FellowViewModel
 import com.example.slave3012314134124123.friendslist.MoneyStr
@@ -40,8 +35,8 @@ import kotlinx.coroutines.runBlocking
 @Composable
 fun SlaveInfoScreen(
     viewModel: FellowViewModel = hiltNavGraphViewModel(),
-    youId: Int,
     idFellow: Int?,
+    сache: Сache,
     navController: NavController
 ) {
     val slaveInfo = produceState<Resource<Fellow>>(initialValue = Resource.Loading()) {
@@ -100,7 +95,7 @@ fun SlaveInfoScreen(
                                     fontFamily = FontFamily.SansSerif,
                                     fontSize = 14.sp
                                 )
-                                if (youId == slaveInfo.value.data?.master_id) {
+                                if (сache.user_id == slaveInfo.value.data?.master_id) {
                                     MoneyStr(
                                         silver = it.sale_price_sm,
                                         gold = it.sale_price_gm,
@@ -131,7 +126,7 @@ fun SlaveInfoScreen(
                     .padding(top = 10.dp),
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                if (youId == slaveInfo.value.data?.master_id) {
+                //if (cash.user_id == slaveInfo.value.data?.master_id) {
                     Button(onClick = {
                         runBlocking {
                             val stringInfo =
@@ -149,22 +144,23 @@ fun SlaveInfoScreen(
                     }) {
                         Text(text = "Назначить")
                     }
-                } else {
-                    Button(onClick = {
-
-                        runBlocking {
-                            val stringInfo = viewModel.buyFellow(
-                                "THIS TOKEN",
-                                slaveInfo.value.data!!.id
-                            ).message.toString()
-                            Log.e("BUY", stringInfo)
-                        }
-                        navController.navigate("user_profile",)
-
-                    }) {
-                        Text(text = "Купить")
-                    }
-                }
+                //}
+//                else {
+//                    Button(onClick = {
+//
+//                        runBlocking {
+//                            val stringInfo = viewModel.buyFellow(
+//                                "THIS TOKEN",
+//                                slaveInfo.value.data!!.id
+//                            ).message.toString()
+//                            Log.e("BUY", stringInfo)
+//                        }
+//                        navController.navigate("user_profile",)
+//
+//                    }) {
+//                        Text(text = "Купить")
+//                    }
+//                }
             }
             Row( modifier = Modifier
                 .fillMaxWidth()
@@ -275,7 +271,6 @@ fun FullScreenDialog(navController: NavController, viewModel: FellowViewModel ,i
     var jobText by remember { mutableStateOf("") }
 
 
-
     if (showDialog) {
         Dialog(onDismissRequest = {}) {
 
@@ -314,8 +309,6 @@ fun FullScreenDialog(navController: NavController, viewModel: FellowViewModel ,i
                         maxLines = 1,
 
                         onValueChange = { jobText = it },
-
-
 
                         //modifier = Modifier.height(40.dp)
                     )

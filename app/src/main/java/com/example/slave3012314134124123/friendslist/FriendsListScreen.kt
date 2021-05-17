@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -26,21 +25,20 @@ import androidx.hilt.navigation.compose.hiltNavGraphViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.navigate
 import coil.request.ImageRequest
+import com.example.slave3012314134124123.data.models.Сache
 import com.example.slave3012314134124123.data.models.FriendsListEntry
-import com.example.slave3012314134124123.navigationbar.NavigationBarScreen
 import com.google.accompanist.coil.CoilImage
 
 
 @Composable
 fun FriendsListScreen(
-    masterFio: String,
-    setMasterFio: (String)->Unit,
-    youId: Int,
+    сache: Сache,
     navController: NavController
 ){
 
+    Log.e("FRIEND-SCREEN", "YOU: ${сache.user_id}")
     Column() {
-        FriendsList(navController = navController,youId = youId, setMasterFio = setMasterFio, masterFio = masterFio)
+        FriendsList(navController = navController,сache = сache)
 
     }
 }
@@ -49,9 +47,7 @@ fun FriendsListScreen(
 
 @Composable
 fun FriendsList(
-    masterFio: String,
-    setMasterFio: (String)->Unit,
-    youId: Int,
+    сache: Сache,
     navController: NavController,
     viewModel: FriendsListViewModel = hiltNavGraphViewModel()
 
@@ -73,19 +69,9 @@ fun FriendsList(
                 viewModel.loadFriendsPaginated()
             }
             Log.e("FIO", friendsList[it].fio)
-            FriendsRow(rowIndex = it, entries = friendsList, navController = navController, youId = youId, masterFio = masterFio,setMasterFio = setMasterFio )
+            FriendsRow(rowIndex = it, entries = friendsList, navController = navController, сache = сache )
 
         }
-
-//        items(itemCount) {
-//            if(it >= itemCount - 1) {
-//                viewModel.loadFriendsPaginated()
-//            }
-//            FriendsRow(rowIndex = 0, entries = friendsList, navController = navController)
-//
-//            Log.e("Info", "FriendsList-2")
-//
-//        }
 
     }
 
@@ -95,20 +81,16 @@ fun FriendsList(
 
 @Composable
 fun FriendsRow(
-    masterFio: String,
-    youId: Int,
+    сache: Сache,
     rowIndex: Int,
     entries: List<FriendsListEntry>,
     navController: NavController,
-    setMasterFio: (String)->Unit
 ){
     Column() {
         FriendsEntry(
+            сache = сache,
             entry = entries[rowIndex],
             navController = navController,
-            youId = youId,
-            masterFio = masterFio,
-            setMasterFio = setMasterFio
         )
         Spacer(modifier = Modifier.height(6.dp))
     }
@@ -117,9 +99,7 @@ fun FriendsRow(
 
 @Composable
 fun FriendsEntry(
-    masterFio: String,
-    setMasterFio: (String)->Unit,
-    youId: Int,
+    сache: Сache,
     entry: FriendsListEntry,
     navController: NavController,
     viewModel: FriendsListViewModel = hiltNavGraphViewModel()
@@ -137,7 +117,8 @@ fun FriendsEntry(
                     "friend_profile/${entry.id}",
 
                 )
-                setMasterFio(entry.masterFio)
+                сache.master_fio = entry.masterFio
+                сache.master_id = entry.master_Id
             }
     ) {
 

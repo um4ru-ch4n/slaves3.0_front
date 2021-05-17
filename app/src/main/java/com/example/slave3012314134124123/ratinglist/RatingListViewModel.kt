@@ -33,7 +33,7 @@ class RatingListViewModel @Inject constructor(
                 isLoading.value = true
                 val result =
                     repository.getRatingList("AccessToken ${Constants.TOKEN}")
-                Log.e("VM-RARING", result.message.toString())
+                Log.e("RATING-LIST", result.message.toString())
                 when (result) {
                     is Resource.Success -> {
 

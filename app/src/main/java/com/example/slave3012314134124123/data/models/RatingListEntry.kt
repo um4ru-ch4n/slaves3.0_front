@@ -5,5 +5,6 @@ data class RatingListEntry(
     val fio : String,
     val photo : String,
     val slaves_count: Int,
-    val id_user: Int
+    val id_user: Int,
+    //val master_id: Int
 )

@@ -18,27 +18,25 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltNavGraphViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.navigate
 import coil.request.ImageRequest
-import com.example.slave3012314134124123.data.models.FriendsListEntry
+import com.example.slave3012314134124123.data.models.Сache
 import com.example.slave3012314134124123.data.models.RatingListEntry
 import com.example.slave3012314134124123.friendslist.FriendsListViewModel
-import com.example.slave3012314134124123.friendslist.MoneyStr
-import com.example.slave3012314134124123.navigationbar.NavigationBarScreen
 import com.google.accompanist.coil.CoilImage
 
 @Composable
 fun RatingListScreen(
+    сache: Сache,
     navController: NavController
 ){
 
     Column() {
-        RatingList(navController = navController)
+        RatingList(navController = navController, сache = сache)
 
     }
 }
@@ -47,6 +45,7 @@ fun RatingListScreen(
 
 @Composable
 fun RatingList(
+    сache: Сache,
     navController: NavController,
     viewModel: RatingListViewModel = hiltNavGraphViewModel()
 
@@ -71,7 +70,7 @@ fun RatingList(
                 viewModel.loadRatingListPaginated()
             }
             Log.e("FIO", ratingList[it].fio)
-            RatingRow(rowIndex = it, entries = ratingList, navController = navController)
+            RatingRow(rowIndex = it, entries = ratingList, navController = navController, сache = сache)
 
         }
     }
@@ -82,6 +81,7 @@ fun RatingList(
 
 @Composable
 fun RatingRow(
+    сache: Сache,
     rowIndex: Int,
     entries: List<RatingListEntry>,
     navController: NavController
@@ -90,6 +90,7 @@ fun RatingRow(
         RatingEntry(
             entry = entries[rowIndex],
             navController = navController,
+            сache = сache
         )
         Spacer(modifier = Modifier.height(6.dp))
     }
@@ -98,6 +99,7 @@ fun RatingRow(
 
 @Composable
 fun RatingEntry(
+    сache: Сache,
     entry: RatingListEntry,
     navController: NavController,
     viewModel: FriendsListViewModel = hiltNavGraphViewModel()
@@ -114,6 +116,8 @@ fun RatingEntry(
                 navController.navigate(
                     "user_profile/${entry.id_user}",
                     )
+                    //cash.master_id = entry.
+
             }
     ) {
 

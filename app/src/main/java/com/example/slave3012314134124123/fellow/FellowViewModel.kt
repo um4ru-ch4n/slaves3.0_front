@@ -33,6 +33,7 @@ class FellowViewModel @Inject constructor(
             "AccessToken ${TOKEN}",
             fellowBodyRequest
         )
+        Log.e("LOAD-FELLOW", result.message.toString())
         return result
     }
 
@@ -81,7 +82,7 @@ class FellowViewModel @Inject constructor(
             "AccessToken ${TOKEN}",
             buuBodyRequest
         )
-        Log.e("SETJOB", result.message.toString())
+        Log.e("SET-JOB", result.message.toString())
         return result
     }
 
