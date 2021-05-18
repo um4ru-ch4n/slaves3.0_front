@@ -37,13 +37,14 @@ fun SlavesListScreen(
     сache: Сache,
     navController: NavController
 ){
-    SlavesList(navController = navController)
+    SlavesList(navController = navController, сache = сache)
 }
 
 
 
 @Composable
 fun SlavesList(
+    сache: Сache,
     navController: NavController,
     viewModel: SlavesListViewModel = hiltNavGraphViewModel()
 
@@ -63,7 +64,7 @@ fun SlavesList(
 
         items(slavesList.size){
             if(it >= slavesList.size){
-                viewModel.loadSlavesPaginated()
+                viewModel.loadSlavesPaginated(сache.token!!)
             }
             Log.e("FIO", slavesList[it].fio)
             SlavesRow(rowIndex = it, entries = slavesList, navController = navController, maxSize = slavesList.size)

@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.example.slave3012314134124123.data.remote.responses.Fellow
 import com.example.slave3012314134124123.repository.UserRepository
-import com.example.slave3012314134124123.util.Constants.TOKEN
 import com.example.slave3012314134124123.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -30,7 +29,7 @@ class FellowViewModel @Inject constructor(
             jsonObjectString.toRequestBody("application/json".toMediaTypeOrNull())
 
         val result = repository.postFellow(
-            "AccessToken ${TOKEN}",
+            "AccessToken ${token}",
             fellowBodyRequest
         )
         Log.e("LOAD-FELLOW", result.message.toString())
@@ -46,7 +45,7 @@ class FellowViewModel @Inject constructor(
             jsonObjectString.toRequestBody("application/json".toMediaTypeOrNull())
 
         val result = repository.postBuy(
-            "AccessToken ${TOKEN}",
+            "AccessToken ${token}",
             buuBodyRequest
         )
         Log.e("BUY", result.message.toString())
@@ -62,7 +61,7 @@ class FellowViewModel @Inject constructor(
             jsonObjectString.toRequestBody("application/json".toMediaTypeOrNull())
 
         val result = repository.postSale(
-            "AccessToken ${TOKEN}",
+            "AccessToken ${token}",
             buuBodyRequest
         )
         Log.e("SALE", result.message.toString())
@@ -79,7 +78,7 @@ class FellowViewModel @Inject constructor(
             jsonObjectString.toRequestBody("application/json".toMediaTypeOrNull())
 
         val result = repository.postSetJob(
-            "AccessToken ${TOKEN}",
+            "AccessToken ${token}",
             buuBodyRequest
         )
         Log.e("SET-JOB", result.message.toString())

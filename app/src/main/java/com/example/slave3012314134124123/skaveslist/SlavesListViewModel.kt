@@ -24,16 +24,16 @@ class SlavesListViewModel  @Inject constructor(
     var loadError = mutableStateOf("")
     var isLoading = mutableStateOf(false)
 
-    init {
-        loadSlavesPaginated()
-    }
+//    init {
+//        loadSlavesPaginated(token)
+//    }
 
 
-    fun loadSlavesPaginated() {
+    fun loadSlavesPaginated(token:String) {
         viewModelScope.launch {
             isLoading.value = true
             val result =
-                repository.getSlavesList("AccessToken ${Constants.TOKEN}")
+                repository.getSlavesList("AccessToken ${token}")
             Log.e("SLAVE-LIST", result.message.toString())
             when (result) {
                 is Resource.Success -> {

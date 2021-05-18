@@ -43,7 +43,7 @@ fun FellowScreen (
 ) {
 
     val userInfo = produceState<Resource<Fellow>>(initialValue = Resource.Loading()) {
-        value = viewModel.loadFellow("THIS TOKEN", idFellow!!)
+        value = viewModel.loadFellow(сache.token!!, idFellow!!)
     }
     val (showJob, setShowDialog) = remember { mutableStateOf(false) }
 
@@ -136,7 +136,7 @@ fun FellowScreen (
                     Button(onClick = {
                         runBlocking {
                             val stringInfo =
-                                viewModel.saleFellow("THIS TOKEN", userInfo.value.data!!.id)
+                                viewModel.saleFellow(сache.token!!, userInfo.value.data!!.id)
                                     .toString()
 
                         }
@@ -154,7 +154,7 @@ fun FellowScreen (
 
                         runBlocking {
                             val stringInfo = viewModel.buyFellow(
-                                "THIS TOKEN",
+                                сache.token!!,
                                 userInfo.value.data!!.id
                             ).message.toString()
                         }
@@ -167,6 +167,7 @@ fun FellowScreen (
             }
 
             FullScreenDialog(
+                сache,
                 navController,
                 viewModel,
                 userInfo.value.data?.id,

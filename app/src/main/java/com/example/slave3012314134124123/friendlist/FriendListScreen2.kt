@@ -25,16 +25,20 @@ import androidx.navigation.compose.navigate
 import coil.request.ImageRequest
 import com.example.slave3012314134124123.data.models.Сache
 import com.example.slave3012314134124123.data.models.FriendsListEntry
+import com.example.slave3012314134124123.data.remote.responses.FriendsList
+import com.example.slave3012314134124123.data.remote.responses.FriendsListItem
+import com.example.slave3012314134124123.util.Resource
 import com.google.accompanist.coil.CoilImage
+import kotlinx.coroutines.runBlocking
 
 
 @Composable
-fun FriendsListScreen(
+fun FriendsListScreen2(
     сache: Сache,
     navController: NavController
 ){
     Column() {
-        FriendsList(navController = navController,сache = сache)
+        FriendsList2(navController = navController,сache = сache)
 
     }
 }
@@ -42,37 +46,34 @@ fun FriendsListScreen(
 
 
 @Composable
-fun FriendsList(
+fun FriendsList2(
     сache: Сache,
     navController: NavController,
-    viewModel: FriendsListViewModel = hiltNavGraphViewModel()
+    viewModel: FriendsListViewModel2 = hiltNavGraphViewModel()
 
 ){
 
-    val friendsList by remember { viewModel.friendsList}
-    val loadError by remember { viewModel.loadError}
-    val isLoading by remember { viewModel.isLoading}
-
-//    var token = remember {
-//      viewModel.token
-//    }
-
-
+    val friendsList : Resource<FriendsList>
+    runBlocking {
+        friendsList = viewModel.loadFriendsPaginated(сache.token!!)
+    }
+    Log.e("EEEEEEEEEEEEEEEEEEEEEE", " QQQQQ ${friendsList.data?.size}")
 
     LazyColumn(
         contentPadding = PaddingValues(10.dp)
-    ){
-        val itemCount = friendsList.size
+    ) {
 
 
-        var i = 0
-        items(friendsList.size){
-            if(it >= friendsList.size){
-                viewModel.loadFriendsPaginated(сache.token!!)
-            }
-            FriendsRow(rowIndex = it, entries = friendsList, navController = navController, сache = сache )
+        //items(friendsList.data!!.size){
+
+
+        items(friendsList.data!!.size) {
+
+            FriendsRow2(entries = friendsList.data!![it], navController = navController, сache = сache)
 
         }
+
+
 
     }
 
@@ -81,16 +82,15 @@ fun FriendsList(
 }
 
 @Composable
-fun FriendsRow(
+fun FriendsRow2(
     сache: Сache,
-    rowIndex: Int,
-    entries: List<FriendsListEntry>,
+    entries: FriendsListItem,
     navController: NavController,
 ){
     Column() {
-        FriendsEntry(
+        FriendsEntry2(
             сache = сache,
-            entry = entries[rowIndex],
+            entry = entries,
             navController = navController,
         )
         Spacer(modifier = Modifier.height(6.dp))
@@ -99,9 +99,9 @@ fun FriendsRow(
 }
 
 @Composable
-fun FriendsEntry(
+fun FriendsEntry2(
     сache: Сache,
-    entry: FriendsListEntry,
+    entry: FriendsListItem,
     navController: NavController,
     viewModel: FriendsListViewModel = hiltNavGraphViewModel()
 ) {
@@ -118,8 +118,8 @@ fun FriendsEntry(
                     "friend_profile/${entry.id}",
 
                     )
-                сache.master_fio = entry.masterFio
-                сache.master_id = entry.master_Id
+                сache.master_fio = entry.master_fio
+                сache.master_id = entry.master_id
             }
     ) {
 
@@ -149,7 +149,7 @@ fun FriendsEntry(
                     )
                     Row(modifier = Modifier.fillMaxWidth()) {
                         Text(
-                            text = "Босс ${if (entry.masterFio == "") "отсутствует" else entry.masterFio} ",
+                            text = "Босс ${if (entry.master_fio == "") "отсутствует" else entry.master_fio} ",
                             fontWeight = FontWeight(500),
                             fontFamily = FontFamily.SansSerif,
                             fontSize = 14.sp
@@ -159,20 +159,20 @@ fun FriendsEntry(
                             horizontalArrangement = Arrangement.End
                         ) {
                             Text(
-                                text = "${entry.slaveLvl.toString()} lvl",
+                                text = "${entry.slave_level.toString()} lvl",
                                 color = Color.Blue,
                                 textAlign = TextAlign.End
                             )
                         }
                     }
                     Row(modifier = Modifier.fillMaxWidth()) {
-                        MoneyStr(silver = entry.priceSilver, gold = entry.priceGold, info = "Стоимость ")
+                        MoneyStr2(silver = entry.purchase_price_sm, gold = entry.purchase_price_gm, info = "Стоимость ")
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.End
                         ) {
                             Text(
-                                text = "${entry.defLvl.toString()} lvl",
+                                text = "${entry.defender_level.toString()} lvl",
                                 color = Color.Red,
                                 textAlign = TextAlign.End
                             )
@@ -185,7 +185,7 @@ fun FriendsEntry(
 }
 
 @Composable
-fun MoneyStr(info:String, silver: Int, gold: Int) {
+fun MoneyStr2(info:String, silver: Int, gold: Int) {
     Row {
         Text(
             text = info, fontWeight = FontWeight(500),

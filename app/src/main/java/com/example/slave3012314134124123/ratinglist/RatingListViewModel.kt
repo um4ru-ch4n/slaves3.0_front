@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.slave3012314134124123.data.models.FriendsListEntry
 import com.example.slave3012314134124123.data.models.RatingListEntry
+import com.example.slave3012314134124123.data.models.Сache
 import com.example.slave3012314134124123.repository.UserRepository
 import com.example.slave3012314134124123.util.Constants
 import com.example.slave3012314134124123.util.Resource
@@ -15,7 +16,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RatingListViewModel @Inject constructor(
-
     private val repository: UserRepository
     ): ViewModel() {
 
@@ -23,16 +23,16 @@ class RatingListViewModel @Inject constructor(
         var loadError = mutableStateOf("")
         var isLoading = mutableStateOf(false)
 
-        init {
-            loadRatingListPaginated()
-        }
+//        init {
+//            loadRatingListPaginated(token)
+//        }
 
 
-        fun loadRatingListPaginated() {
+        fun loadRatingListPaginated(token: String) {
             viewModelScope.launch {
                 isLoading.value = true
                 val result =
-                    repository.getRatingList("AccessToken ${Constants.TOKEN}")
+                    repository.getRatingList("AccessToken ${token}")
                 Log.e("RATING-LIST", result.message.toString())
                 when (result) {
                     is Resource.Success -> {

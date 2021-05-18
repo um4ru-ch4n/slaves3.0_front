@@ -19,6 +19,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.constraintlayout.solver.Cache
 import androidx.hilt.navigation.compose.hiltNavGraphViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.navigate
@@ -40,7 +41,7 @@ fun SlaveInfoScreen(
     navController: NavController
 ) {
     val slaveInfo = produceState<Resource<Fellow>>(initialValue = Resource.Loading()) {
-        value = viewModel.loadFellow("THIS TOKEN", idFellow!!)
+        value = viewModel.loadFellow(сache.token!!, idFellow!!)
     }
 
     val (showJob, setShowDialog) = remember { mutableStateOf(false) }
@@ -130,7 +131,7 @@ fun SlaveInfoScreen(
                     Button(onClick = {
                         runBlocking {
                             val stringInfo =
-                                viewModel.saleFellow("THIS TOKEN", slaveInfo.value.data!!.id)
+                                viewModel.saleFellow(сache.token!!, slaveInfo.value.data!!.id)
                                     .toString()
                             Log.e("BUY", stringInfo)
 
@@ -255,6 +256,7 @@ fun SlaveInfoScreen(
             }
 
             FullScreenDialog(
+                сache,
                 navController,
                 viewModel,
                 slaveInfo.value.data?.id,
@@ -266,7 +268,7 @@ fun SlaveInfoScreen(
 }
 
 @Composable
-fun FullScreenDialog(navController: NavController, viewModel: FellowViewModel ,id:Int?,showDialog:Boolean,setShowDialog: (Boolean)->Unit) {
+fun FullScreenDialog(сache: Сache, navController: NavController, viewModel: FellowViewModel ,id:Int?,showDialog:Boolean,setShowDialog: (Boolean)->Unit) {
 
     var jobText by remember { mutableStateOf("") }
 
@@ -330,7 +332,7 @@ fun FullScreenDialog(navController: NavController, viewModel: FellowViewModel ,i
                                 Log.e("SET JOB1", "work")
                                 runBlocking {
                                     val stringInfo =
-                                        viewModel.setJob("THIS TOKEN", id!!, jobText)
+                                        viewModel.setJob(сache.token!!, id!!, jobText)
                                             .toString()
                                     Log.e("SET JOB2", stringInfo)
 

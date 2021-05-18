@@ -67,7 +67,7 @@ fun RatingList(
             Log.e("RATING-SIZE",ratingList.size.toString() )
 
             if(it >= ratingList.size){
-                viewModel.loadRatingListPaginated()
+                viewModel.loadRatingListPaginated(сache.token!!)
             }
             Log.e("FIO", ratingList[it].fio)
             RatingRow(rowIndex = it, entries = ratingList, navController = navController, сache = сache)

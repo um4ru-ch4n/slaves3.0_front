@@ -21,7 +21,7 @@ class UserViewModel @Inject constructor(
 
 
     suspend fun loadUser(token:String):Resource<User>{
-        val result = repository.getUser("AccessToken ${Constants.TOKEN}")
+        val result = repository.getUser("AccessToken ${token}")
         Log.e("USER", result.message.toString())
         return result
 

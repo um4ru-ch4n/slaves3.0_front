@@ -96,4 +96,5 @@ dependencies {
 
     //other
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.0.1'
+    implementation 'com.vk:androidsdk:2.4.0'
 }
