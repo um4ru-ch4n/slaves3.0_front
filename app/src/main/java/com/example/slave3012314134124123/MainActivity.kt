@@ -29,6 +29,7 @@ import com.example.slave3012314134124123.friendslist.FriendsListScreen
 import com.example.slave3012314134124123.friendslist.FriendsListScreen2
 import com.example.slave3012314134124123.navigationbar.NavigationBarScreen
 import com.example.slave3012314134124123.ratinglist.RatingListScreen
+import com.example.slave3012314134124123.ratinglist.RatingListScreen2
 import com.example.slave3012314134124123.slaveinfo.SlaveInfoScreen
 import com.example.slave3012314134124123.ui.theme.Slave3012314134124123Theme
 import com.example.slave3012314134124123.user.UserScreen
@@ -146,7 +147,7 @@ class MainActivity : ComponentActivity() {
                                         .padding(start = 5.dp, end = 5.dp, top = 5.dp)
                                 ) {
 
-                                    RatingListScreen(navController = navController, сache = сache)
+                                    RatingListScreen2(navController = navController, сache = сache)
                                 }
 
                                 Box(
@@ -187,6 +188,12 @@ class MainActivity : ComponentActivity() {
                                         сache = сache
                                     )
                                 }
+                                Box(
+                                    modifier = Modifier
+                                        .align(Alignment.BottomCenter),
+                                ) {
+                                    NavigationBarScreen(navController = navController, сache = сache)
+                                }
                             }
                         }
                         composable("friend_profile/{id}", arguments = listOf(navArgument("id") {
@@ -214,6 +221,12 @@ class MainActivity : ComponentActivity() {
                                         path = "friends_list",
                                         сache = сache
                                     )
+                                }
+                                Box(
+                                    modifier = Modifier
+                                        .align(Alignment.BottomCenter),
+                                ) {
+                                    NavigationBarScreen(navController = navController, сache = сache)
                                 }
                             }
                         }
@@ -244,6 +257,12 @@ class MainActivity : ComponentActivity() {
                                         idFellow = id,
                                         сache = сache
                                     )
+                                }
+                                Box(
+                                    modifier = Modifier
+                                        .align(Alignment.BottomCenter),
+                                ) {
+                                    NavigationBarScreen(navController = navController, сache = сache)
                                 }
                             }
                         }
