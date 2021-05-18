@@ -46,10 +46,7 @@ class MainActivity : ComponentActivity() {
     var navController = NavController(this)
     val сache: Сache = Сache(0,0,0,"", "")
 
-    fun qwe(): String?{
-        prefs = getSharedPreferences("token", Context.MODE_PRIVATE)
-        return prefs.getString("token", "")
-    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,10 +55,10 @@ class MainActivity : ComponentActivity() {
                 // A surface container using the 'background' color from the theme
                 Surface(color = MaterialTheme.colors.background) {
 
-                    qwe()
+                    //qwe()
                     //prefs =
                     //saveToken("")
-
+                    prefs = getSharedPreferences("token", Context.MODE_PRIVATE)
                     Log.e("Save token", "${prefs.getString("token", "")}")
 
                     сache.token = prefs.getString("token", "")
