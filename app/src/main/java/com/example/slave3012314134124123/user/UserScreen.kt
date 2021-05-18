@@ -1,7 +1,6 @@
 package com.example.slave3012314134124123.user
 
 import android.app.Activity
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -19,7 +18,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltNavGraphViewModel
@@ -28,7 +26,8 @@ import androidx.navigation.compose.navigate
 import coil.request.ImageRequest
 import com.example.slave3012314134124123.data.models.Сache
 import com.example.slave3012314134124123.data.remote.responses.User
-import com.example.slave3012314134124123.skaveslist.SlavesListScreen
+import com.example.slave3012314134124123.slavelist2.SlavesListScreen2
+import com.example.slave3012314134124123.slaveslist.SlavesListScreen
 import com.example.slave3012314134124123.util.Resource
 import com.google.accompanist.coil.CoilImage
 
@@ -137,7 +136,7 @@ fun UserScreen(
                     }
                 }
                 Spacer(modifier = Modifier.height(15.dp))
-                SlavesListScreen(navController = navController, сache = сache)
+                SlavesListScreen2(navController = navController, сache = сache)
             }
         }
     }

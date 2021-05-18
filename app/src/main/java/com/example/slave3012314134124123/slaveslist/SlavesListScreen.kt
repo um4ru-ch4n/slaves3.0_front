@@ -1,4 +1,4 @@
-package com.example.slave3012314134124123.skaveslist
+package com.example.slave3012314134124123.slaveslist
 
 
 import android.util.Log

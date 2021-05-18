@@ -1,4 +1,4 @@
-package com.example.slave3012314134124123.skaveslist
+package com.example.slave3012314134124123.slaveslist
 
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
@@ -7,7 +7,6 @@ import androidx.lifecycle.viewModelScope
 import com.example.slave3012314134124123.data.models.SlavesListEntry
 import com.example.slave3012314134124123.data.remote.responses.SlavesList
 import com.example.slave3012314134124123.repository.UserRepository
-import com.example.slave3012314134124123.util.Constants
 import com.example.slave3012314134124123.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch

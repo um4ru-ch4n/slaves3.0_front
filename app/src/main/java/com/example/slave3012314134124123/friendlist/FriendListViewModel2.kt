@@ -24,13 +24,6 @@ class FriendsListViewModel2 @Inject constructor(
     private val repository: UserRepository,
 ): ViewModel() {
 
-
-    var friendsList = mutableStateOf<List<FriendsListEntry>>(listOf())
-    var loadError = mutableStateOf("")
-    var isLoading = mutableStateOf(false)
-    var token = mutableStateOf("")
-
-
     suspend fun loadFriendsPaginated(token: String): Resource<FriendsList> {
 
         Log.e("VM-FL", "token ${token}")
