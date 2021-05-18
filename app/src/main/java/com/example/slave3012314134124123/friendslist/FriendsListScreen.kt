@@ -52,7 +52,7 @@ fun FriendsList(
     val friendsList by remember { viewModel.friendsList}
     val loadError by remember { viewModel.loadError}
     val isLoading by remember { viewModel.isLoading}
-
+    viewModel.token2.value = сache.token!!
 //    var token = remember {
 //      viewModel.token
 //    }

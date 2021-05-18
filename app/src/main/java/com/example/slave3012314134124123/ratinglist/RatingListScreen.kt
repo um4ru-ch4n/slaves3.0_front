@@ -53,7 +53,7 @@ fun RatingList(
     val ratingList by remember { viewModel.ratingList}
     val loadError by remember { viewModel.loadError}
     val isLoading by remember { viewModel.isLoading}
-
+    viewModel.token2.value = сache.token!!
     LazyColumn(
         contentPadding = PaddingValues(10.dp)
     ){

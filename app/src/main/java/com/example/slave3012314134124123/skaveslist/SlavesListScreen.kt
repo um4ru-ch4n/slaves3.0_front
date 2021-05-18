@@ -49,9 +49,16 @@ fun SlavesList(
     viewModel: SlavesListViewModel = hiltNavGraphViewModel()
 
 ){
+
+    viewModel.token2.value = сache.token!!
+
     val slavesList by remember { viewModel.slavesList}
     val loadError by remember { viewModel.loadError}
     val isLoading by remember { viewModel.isLoading}
+
+
+
+    Log.e("TOKEN VM-SL", "V ${viewModel.token2.value}")
 
     LazyColumn(
         contentPadding = PaddingValues(0.dp),
@@ -64,7 +71,7 @@ fun SlavesList(
 
         items(slavesList.size){
             if(it >= slavesList.size){
-                viewModel.loadSlavesPaginated(сache.token!!)
+                viewModel.loadSlavesPaginated()
             }
             Log.e("FIO", slavesList[it].fio)
             SlavesRow(rowIndex = it, entries = slavesList, navController = navController, maxSize = slavesList.size)

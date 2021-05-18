@@ -115,7 +115,7 @@ class MainActivity : ComponentActivity() {
                                         .padding(start = 5.dp, end = 5.dp, top = 5.dp)
                                 ) {
 
-                                    FriendsListScreen2(
+                                    FriendsListScreen(
                                         navController = navController,
                                         сache = сache
                                     )

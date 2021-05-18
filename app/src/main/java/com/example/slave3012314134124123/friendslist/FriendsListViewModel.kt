@@ -58,7 +58,7 @@ class FriendsListViewModel @Inject constructor(
     var friendsList = mutableStateOf<List<FriendsListEntry>>(listOf())
     var loadError = mutableStateOf("")
     var isLoading = mutableStateOf(false)
-
+    var token2 = mutableStateOf<String>("")
 
     init {
         loadFriendsPaginated( "NULL")
@@ -78,8 +78,10 @@ class FriendsListViewModel @Inject constructor(
             //Log.e("VM-FL", "token ${token2}")
 
             isLoading.value = true
-            val result =
-                repository.getFriendsList("AccessToken ${token}")
+            var result =
+                repository.getFriendsList("AccessToken ${token2.value}")
+            result =
+                repository.getFriendsList("AccessToken ${token2.value}")
            // Log.e("FRIEND-LIST", result.message.toString())
 
             when (result) {

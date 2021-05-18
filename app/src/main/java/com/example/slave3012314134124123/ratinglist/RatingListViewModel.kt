@@ -22,17 +22,21 @@ class RatingListViewModel @Inject constructor(
         var ratingList = mutableStateOf<List<RatingListEntry>>(listOf())
         var loadError = mutableStateOf("")
         var isLoading = mutableStateOf(false)
+        var token2 = mutableStateOf<String>("")
 
-//        init {
-//            loadRatingListPaginated(token)
-//        }
+        init {
+            loadRatingListPaginated("token")
+        }
 
 
         fun loadRatingListPaginated(token: String) {
             viewModelScope.launch {
                 isLoading.value = true
-                val result =
-                    repository.getRatingList("AccessToken ${token}")
+
+                var result =
+                    repository.getRatingList("AccessToken ${token2.value}")
+                result =
+                    repository.getRatingList("AccessToken ${token2.value}")
                 Log.e("RATING-LIST", result.message.toString())
                 when (result) {
                     is Resource.Success -> {
