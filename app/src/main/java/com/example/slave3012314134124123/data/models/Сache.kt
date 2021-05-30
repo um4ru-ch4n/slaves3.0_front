@@ -4,6 +4,7 @@ data class Сache(
 
     var user_id: Int,
     var fellow_id: Int,
+    var fellow_id2: Int?,
     var master_id:Int,
     var master_fio:String,
     var token: String?

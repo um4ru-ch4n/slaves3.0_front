@@ -32,7 +32,7 @@ class FellowViewModel @Inject constructor(
             "AccessToken ${token}",
             fellowBodyRequest
         )
-        Log.e("LOAD-FELLOW", result.message.toString())
+        //Log.e("LOAD-FELLOW", result.message.toString())
         return result
     }
 
@@ -48,7 +48,7 @@ class FellowViewModel @Inject constructor(
             "AccessToken ${token}",
             buuBodyRequest
         )
-        Log.e("BUY", result.message.toString())
+        //Log.e("BUY", result.message.toString())
         return result
     }
 
@@ -64,7 +64,7 @@ class FellowViewModel @Inject constructor(
             "AccessToken ${token}",
             buuBodyRequest
         )
-        Log.e("SALE", result.message.toString())
+        //Log.e("SALE", result.message.toString())
         return result
     }
 
@@ -81,7 +81,26 @@ class FellowViewModel @Inject constructor(
             "AccessToken ${token}",
             buuBodyRequest
         )
-        Log.e("SET-JOB", result.message.toString())
+        //Log.e("SET-JOB", result.message.toString())
+        return result
+    }
+
+
+
+    suspend fun setFetter(token: String, id: Int, type:String):Resource<String>{
+        val jsonObject = JSONObject()
+        jsonObject.put("fetter_type", type)
+        jsonObject.put("slave_id", id)
+        val jsonObjectString = jsonObject.toString()
+
+        val buuBodyRequest =
+            jsonObjectString.toRequestBody("application/json".toMediaTypeOrNull())
+
+        val result = repository. postSetFetter(
+            "AccessToken ${token}",
+            buuBodyRequest
+        )
+        //Log.e("SET-FETTER", "I: ${result.message.toString()}")
         return result
     }
 

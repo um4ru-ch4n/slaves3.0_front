@@ -1,6 +1,8 @@
 package com.example.slave3012314134124123.friendslist
 
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -10,6 +12,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
@@ -25,9 +28,11 @@ import androidx.navigation.compose.navigate
 import coil.request.ImageRequest
 import com.example.slave3012314134124123.data.models.Сache
 import com.example.slave3012314134124123.data.models.FriendsListEntry
+import com.example.slave3012314134124123.slaveslist.TextFetter
 import com.google.accompanist.coil.CoilImage
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun FriendsListScreen(
     сache: Сache,
@@ -41,6 +46,7 @@ fun FriendsListScreen(
 
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun FriendsList(
     сache: Сache,
@@ -59,19 +65,20 @@ fun FriendsList(
 
 
 
+
     LazyColumn(
         contentPadding = PaddingValues(10.dp)
     ){
-        val itemCount = friendsList.size
-
-
-        var i = 0
         items(friendsList.size){
             if(it >= friendsList.size){
                 viewModel.loadFriendsPaginated(сache.token!!)
             }
             FriendsRow(rowIndex = it, entries = friendsList, navController = navController, сache = сache )
 
+        }
+        items(1)
+        {
+            Spacer(modifier = Modifier.height(60.dp))
         }
 
     }
@@ -80,6 +87,7 @@ fun FriendsList(
 
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun FriendsRow(
     сache: Сache,
@@ -98,6 +106,7 @@ fun FriendsRow(
 
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun FriendsEntry(
     сache: Сache,
@@ -111,7 +120,7 @@ fun FriendsEntry(
         modifier = Modifier
             .shadow(4.dp, RoundedCornerShape(10.dp))
             .fillMaxWidth()
-            .height(100.dp)
+            .height(105.dp)
             .background(Color.White)
             .clickable {
                 navController.navigate(
@@ -120,22 +129,80 @@ fun FriendsEntry(
                     )
                 сache.master_fio = entry.masterFio
                 сache.master_id = entry.master_Id
+                сache.fellow_id = entry.id
+                сache.fellow_id2 = entry.id
             }
     ) {
 
         Row(modifier = Modifier.padding(15.dp)) {
-            Surface(shape = CircleShape) {
-                CoilImage(
-                    request = ImageRequest.Builder(LocalContext.current)
-                        .data(entry.photo)
-                        .target()
-                        .build(),
-                    contentDescription = entry.fio,
-                    fadeIn = true,
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .size(75.dp)
+
+            ) {
+
+                Box(
                     modifier = Modifier
-                        .size(70.dp)
-                )
+                        .align(Alignment.Center)
+                ) {
+
+
+                    Surface(
+                        shape = CircleShape,
+                        modifier = Modifier
+                        //.align(CenterHorizontally)
+                        //.padding(top = 10.dp)
+                    ) {
+                        if (entry.has_fetter) {
+                            val color = when (entry.fetter_type) {
+                                "common" -> Color(0xFF3CB371)
+                                "uncommon" -> Color(0xFF008B8B)
+                                "rare" -> Color(0xFF4682B4)
+                                "epic" -> Color(0xFFDA70D6)
+                                "immortal" -> Color(0xFFFF8C00)
+                                "legendary" -> Color(0xFF8B0000)
+                                else -> Color(0xFF3CB371)
+                            }
+                            Box(
+                                modifier = Modifier
+                                    .size(90.dp)
+                                    .background(color)
+                            ) {}
+                        }
+                    }
+                }
+
+                Box(
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                ) {
+                    Surface(
+                        shape = CircleShape,
+                        modifier = Modifier
+                        //.align(CenterHorizontally)
+                        //.padding(top = 10.dp)
+                    ) {
+                        CoilImage(
+                            request = ImageRequest.Builder(LocalContext.current)
+                                .data(entry.photo)
+                                .target()
+                                .build(),
+                            contentDescription = entry.fio,
+                            fadeIn = true,
+                            modifier = Modifier
+                                .size(70.dp)
+                        )
+                    }
+                }
+                Box(
+                    modifier = Modifier
+                        .align(Alignment.TopCenter)
+                ) {
+                    TextFetter(fetter_type = entry.fetter_type, has_fetter = entry.has_fetter, fetter_time = entry.fetter_time, fetter_duration = entry.fetter_duration)
+                }
             }
+
 
             Box(modifier = Modifier.padding(start = 15.dp)) {
 
@@ -159,7 +226,8 @@ fun FriendsEntry(
                             horizontalArrangement = Arrangement.End
                         ) {
                             Text(
-                                text = "${entry.slaveLvl.toString()} lvl",
+                                text = "${entry.slaveLvl.toString()}",
+                                fontSize = 14.sp,
                                 color = Color.Blue,
                                 textAlign = TextAlign.End
                             )
@@ -172,7 +240,8 @@ fun FriendsEntry(
                             horizontalArrangement = Arrangement.End
                         ) {
                             Text(
-                                text = "${entry.defLvl.toString()} lvl",
+                                text = "${entry.defLvl.toString()}",
+                                fontSize = 14.sp,
                                 color = Color.Red,
                                 textAlign = TextAlign.End
                             )

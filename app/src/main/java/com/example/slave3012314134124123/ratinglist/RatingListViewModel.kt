@@ -46,7 +46,11 @@ class RatingListViewModel @Inject constructor(
                             val photo = entry.photo
                             val slaves_count = entry.slaves_count
                             val id = entry.id
-                            RatingListEntry(fio,photo,slaves_count,id)
+                            val fetter_type = entry.fetter_type
+                            val fetter_time = entry.fetter_time
+                            val has_fetter = entry.has_fetter
+                            val fetter_duration = entry.fetter_duration
+                            RatingListEntry(fio,photo,slaves_count,id,has_fetter,fetter_type,fetter_time,fetter_duration)
                         }
                         loadError.value = ""
                         isLoading.value = false

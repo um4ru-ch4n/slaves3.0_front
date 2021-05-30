@@ -1,5 +1,6 @@
-package com.example.slave3012314134124123.slaveslist
+package com.example.slave3012314134124123.fellowslaves
 
+import com.example.slave3012314134124123.slaveslist.SlavesListViewModel
 
 import android.os.Build
 import android.util.Log
@@ -15,6 +16,7 @@ import androidx.compose.material.Switch
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
@@ -31,8 +33,10 @@ import androidx.hilt.navigation.compose.hiltNavGraphViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.navigate
 import coil.request.ImageRequest
+import com.example.slave3012314134124123.data.models.FellowSlavesEntry
 import com.example.slave3012314134124123.data.models.Сache
 import com.example.slave3012314134124123.data.models.SlavesListEntry
+import com.example.slave3012314134124123.slaveslist.TextFetter
 import com.google.accompanist.coil.CoilImage
 import java.time.Duration
 import java.time.LocalDateTime
@@ -42,33 +46,38 @@ import javax.annotation.meta.When
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun SlavesListScreen(
+fun FellowSlavesListScreen(
+    fellow_id: Int?,
     сache: Сache,
     navController: NavController
 ){
-    SlavesList(navController = navController, сache = сache)
+    FellowSlavesList(navController = navController, сache = сache,fellow_id=fellow_id)
 }
 
 
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun SlavesList(
+fun FellowSlavesList(
+    fellow_id: Int?,
     сache: Сache,
     navController: NavController,
-    viewModel: SlavesListViewModel = hiltNavGraphViewModel()
+    viewModel: FellowSlavesViewModel = hiltNavGraphViewModel()
 
 ){
-
+    val (loadList, setLoadList) = remember { mutableStateOf(true) }
     viewModel.token2.value = сache.token!!
+    viewModel.user_id.value = сache.fellow_id2!!
 
+
+    if(loadList) {
+        viewModel.loadFellowSlavesPaginated()
+        setLoadList(false)
+    }
     val slavesList by remember { viewModel.slavesList}
     val loadError by remember { viewModel.loadError}
     val isLoading by remember { viewModel.isLoading}
 
-
-
-    Log.e("TOKEN VM-SL", "V ${viewModel.token2.value}")
 
     LazyColumn(
         contentPadding = PaddingValues(0.dp),
@@ -76,16 +85,14 @@ fun SlavesList(
 
     ){
         val itemCount = slavesList.size
-        Log.e("Info", "SlaveList ${itemCount}")
 
+        Log.e("FSS", "SIZE: ${itemCount}")
 
         items(slavesList.size){
             if(it >= slavesList.size){
-                viewModel.loadSlavesPaginated()
+                viewModel.loadFellowSlavesPaginated()
             }
-            Log.e("FIO", slavesList[it].fio)
-            SlavesRow(rowIndex = it, entries = slavesList, navController = navController, maxSize = slavesList.size)
-
+            FellowSlavesRow(rowIndex = it, entries = slavesList, navController = navController, maxSize = slavesList.size, сache = сache)
         }
         items(1)
         {
@@ -96,10 +103,11 @@ fun SlavesList(
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun SlavesRow(
+fun FellowSlavesRow(
+    сache: Сache,
     rowIndex: Int,
     maxSize: Int,
-    entries: List<SlavesListEntry>,
+    entries: List<FellowSlavesEntry>,
     navController: NavController
 ) {
 
@@ -109,19 +117,22 @@ fun SlavesRow(
     ) {
 
         if (rowIndex % 3 == 0) {
-            SlavesEntry(
+            FellowSlavesEntry(
                 entry = entries[rowIndex],
-                navController = navController
+                navController = navController,
+                сache = сache
             )
             if (maxSize - 1 >= rowIndex + 1)
-                SlavesEntry(
+                FellowSlavesEntry(
                     entry = entries[rowIndex + 1],
-                    navController = navController
+                    navController = navController,
+                    сache = сache
                 )
             if (maxSize - 1 >= rowIndex + 2)
-                SlavesEntry(
+                FellowSlavesEntry(
                     entry = entries[rowIndex + 2],
-                    navController = navController
+                    navController = navController,
+                    сache = сache
                 )
         }
 
@@ -133,10 +144,10 @@ fun SlavesRow(
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun SlavesEntry(
-    entry: SlavesListEntry,
+fun FellowSlavesEntry(
+    сache: Сache,
+    entry: FellowSlavesEntry,
     navController: NavController,
-    viewModel: SlavesListViewModel = hiltNavGraphViewModel(),
 ) {
 
     Surface(
@@ -153,8 +164,12 @@ fun SlavesEntry(
         Box(
             modifier = Modifier.clickable {
                 navController.navigate(
-                    "slave_profile/${entry.id}"
+                    "user_profile/${entry.id}"
+
                 )
+                сache.fellow_id = entry.id
+                сache.fellow_id2 = entry.id
+
             }
         ) {
             Column() {
@@ -281,116 +296,7 @@ fun SlavesEntry(
                         .align(CenterHorizontally)
                 )
             }
-
-
-        }
-
-    }
-}
-
-@RequiresApi(Build.VERSION_CODES.O)
-@Composable fun TextFetter(
-    has_fetter: Boolean,
-    fetter_type : String,
-    fetter_time: String,
-    fetter_duration: Int
-) {
-    val time:String = fetter_time
-
-    val currentDateTimeFetter = LocalDateTime.parse(time, DateTimeFormatter.ISO_DATE_TIME)
-
-    val currentDateTime = LocalDateTime.now()
-
-    val timeFetter =  Duration.between(currentDateTimeFetter,currentDateTime).toMinutes()-180
-
-
-
-
-
-    if(has_fetter) {
-
-
-
-        Surface(
-            shape = RoundedCornerShape(10.dp),
-            modifier = Modifier
-        ) {
-
-            val color = when (fetter_type) {
-                "common" -> Color(0xFF3CB371)
-                "uncommon" -> Color(0xFF008B8B)
-                "rare" -> Color(0xFF4682B4)
-                "epic" -> Color(0xFFDA70D6)
-                "immortal" -> Color(0xFFFF8C00)
-                "legendary" -> Color(0xFF8B0000)
-                else -> Color(0xFF3CB371)
-            }
-
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier
-                    //.height(22.dp)
-                    .defaultMinSize(24.dp)
-                    .background(color)
-                    .padding(2.dp)
-            ) {
-                val str = when (fetter_type) {
-                    "common" -> "${fetter_duration-timeFetter}"
-                    "uncommon" -> "${fetter_duration-timeFetter}"
-                    "rare" -> "${fetter_duration-timeFetter}"
-                    "epic" -> "${fetter_duration-timeFetter}"
-                    "immortal" -> "${fetter_duration-timeFetter}"
-                    "legendary" -> "${fetter_duration-timeFetter}"
-                    else -> "0"
-                }
-                Text(
-                    text = str,
-                    fontSize = 14.sp,
-                    color = Color.White,
-                    fontWeight = FontWeight(700),
-                    fontFamily = FontFamily.SansSerif,
-                )
-            }
-        }
-
-
-
-    } else {
-
-        val duration:Long = when (fetter_type) {
-            "common" -> 120
-            "uncommon" -> 240
-            "rare" -> 360
-            "epic" -> 480
-            "immortal" -> 720
-            "legendary" -> 1440
-            else -> 0
-        }
-        Log.e("sdf", "${timeFetter}")
-        if(timeFetter*(-1) == duration) {
-            Surface(
-                shape = RoundedCornerShape(10.dp),
-                modifier = Modifier
-            ) {
-                Box(
-                    contentAlignment = Alignment.Center,
-                    modifier = Modifier
-                        //.height(22.dp)
-                        .defaultMinSize(24.dp)
-                        .background(Color(0xFF808080))
-                        .padding(2.dp)
-                ) {
-                    val str = (fetter_duration - timeFetter).toString()
-
-                    Text(
-                        text = str,
-                        fontSize = 14.sp,
-                        color = Color.White,
-                        fontWeight = FontWeight(700),
-                        fontFamily = FontFamily.SansSerif,
-                    )
-                }
-            }
         }
     }
 }
+

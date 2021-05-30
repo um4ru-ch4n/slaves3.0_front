@@ -1,7 +1,9 @@
 package com.example.slave3012314134124123.user
 
 import android.app.Activity
+import android.os.Build
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -26,12 +28,12 @@ import androidx.navigation.compose.navigate
 import coil.request.ImageRequest
 import com.example.slave3012314134124123.data.models.Сache
 import com.example.slave3012314134124123.data.remote.responses.User
-import com.example.slave3012314134124123.slavelist2.SlavesListScreen2
 import com.example.slave3012314134124123.slaveslist.SlavesListScreen
 import com.example.slave3012314134124123.util.Resource
 import com.google.accompanist.coil.CoilImage
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun UserScreen(
     activity: Activity,
@@ -48,9 +50,6 @@ fun UserScreen(
     if(userInfo.value.message != ""){
         Toast.makeText(activity,"Ошибка ${userInfo.value.message.toString()}", Toast.LENGTH_LONG)
 
-//        navController.navigate(
-//            "auth"
-//        )
     }
 
     userInfo.value.data?.let {
@@ -119,7 +118,7 @@ fun UserScreen(
                                 }
                                 userInfo.value.data?.let {
                                     Text(
-                                        text = "Босс ${it.master_id}",
+                                        text = "Босс ${it.master_fio}",
                                         fontWeight = FontWeight(500),
                                         fontFamily = FontFamily.SansSerif,
                                     )
@@ -136,7 +135,7 @@ fun UserScreen(
                     }
                 }
                 Spacer(modifier = Modifier.height(15.dp))
-                SlavesListScreen2(navController = navController, сache = сache)
+                SlavesListScreen(navController = navController, сache = сache)
             }
         }
     }

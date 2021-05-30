@@ -23,38 +23,6 @@ class FriendsListViewModel @Inject constructor(
     private val repository: UserRepository,
 ): ViewModel() {
 
-
-//    var friendsList = mutableStateOf<List<FriendsListEntry>>(listOf())
-//    var loadError = mutableStateOf("")
-//    var isLoading = mutableStateOf(false)
-//    var token = mutableStateOf("")
-//
-//
-//
-//
-//    suspend fun loadFriendsPaginated(token:String):Resource<FriendsList> {
-//
-//            Log.e("VM-FL", "token ${token}")
-//
-//
-//            val result =
-//                repository.getFriendsList("AccessToken ${token}")
-//
-//            Log.e("VM-FL", "INFO  ${result.message.toString()}")
-//
-//        return result
-//    }
-//
-//
-
-
-
-
-
-
-
-
-
     var friendsList = mutableStateOf<List<FriendsListEntry>>(listOf())
     var loadError = mutableStateOf("")
     var isLoading = mutableStateOf(false)
@@ -68,21 +36,11 @@ class FriendsListViewModel @Inject constructor(
     fun loadFriendsPaginated(token:String) {
 
         viewModelScope.launch {
-
-
-
-
-
-            //prefs = mainActivity.getSharedPreferences("token", Context.MODE_PRIVATE)
-            //val token2 = sdf.getString("token", "")
-            //Log.e("VM-FL", "token ${token2}")
-
             isLoading.value = true
             var result =
                 repository.getFriendsList("AccessToken ${token2.value}")
             result =
                 repository.getFriendsList("AccessToken ${token2.value}")
-           // Log.e("FRIEND-LIST", result.message.toString())
 
             when (result) {
                 is Resource.Success -> {
@@ -97,7 +55,11 @@ class FriendsListViewModel @Inject constructor(
                         val gold = entry.purchase_price_gm
                         val id = entry.id
                         val idMaster = entry.master_id
-                        FriendsListEntry(fio, photo, masterFio, slaveLvl,defLvl, silver, gold, id,idMaster)
+                        val fetter_type = entry.fetter_type
+                        val fetter_time = entry.fetter_time
+                        val has_fetter = entry.has_fetter
+                        val fetter_duration = entry.fetter_duration
+                        FriendsListEntry(fio, photo, masterFio, slaveLvl,defLvl, silver, gold, id,idMaster,has_fetter,fetter_type,fetter_time,fetter_duration)
                     }
                     loadError.value = ""
                     isLoading.value = false

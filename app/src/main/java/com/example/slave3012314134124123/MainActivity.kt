@@ -5,11 +5,13 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
@@ -25,11 +27,10 @@ import androidx.navigation.findNavController
 import com.example.slave3012314134124123.auth.AuthScreen
 import com.example.slave3012314134124123.data.models.Сache
 import com.example.slave3012314134124123.fellow.FellowScreen
+import com.example.slave3012314134124123.fellowslaves.FellowSlavesListScreen
 import com.example.slave3012314134124123.friendslist.FriendsListScreen
-import com.example.slave3012314134124123.friendslist.FriendsListScreen2
 import com.example.slave3012314134124123.navigationbar.NavigationBarScreen
 import com.example.slave3012314134124123.ratinglist.RatingListScreen
-import com.example.slave3012314134124123.ratinglist.RatingListScreen2
 import com.example.slave3012314134124123.slaveinfo.SlaveInfoScreen
 import com.example.slave3012314134124123.ui.theme.Slave3012314134124123Theme
 import com.example.slave3012314134124123.user.UserScreen
@@ -44,10 +45,11 @@ class MainActivity : ComponentActivity() {
     lateinit var prefs : SharedPreferences
 
     var navController = NavController(this)
-    val сache: Сache = Сache(0,0,0,"", "")
+    val сache: Сache = Сache(0,0,0,0,"", "")
 
 
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -144,7 +146,7 @@ class MainActivity : ComponentActivity() {
                                         .padding(start = 5.dp, end = 5.dp, top = 5.dp)
                                 ) {
 
-                                    RatingListScreen2(navController = navController, сache = сache)
+                                    RatingListScreen(navController = navController, сache = сache)
                                 }
 
                                 Box(
@@ -178,13 +180,63 @@ class MainActivity : ComponentActivity() {
                                         .padding(start = 5.dp, end = 5.dp, top = 5.dp)
                                 ) {
 
-                                    FellowScreen(
-                                        navController = navController,
-                                        idFellow = id,
-                                        path = "rating",
-                                        сache = сache
-                                    )
+                                    Column() {
+
+
+                                        FellowScreen(
+                                            navController = navController,
+                                            idFellow = id,
+                                            path = "rating",
+                                            сache = сache,
+                                            activity = this@MainActivity
+                                        )
+
+                                    }
                                 }
+
+                                Box(
+                                    modifier = Modifier
+                                        .align(Alignment.BottomCenter),
+                                ) {
+                                    NavigationBarScreen(navController = navController, сache = сache)
+                                }
+                            }
+                        }
+                        composable("w/{id}", arguments = listOf(
+                            navArgument("id")
+                            {
+                                type = NavType.IntType
+                            })) {
+                            val id = remember {
+                                it.arguments?.getInt("id")
+                            }
+                            Box(
+                                contentAlignment = Alignment.Center,
+                                modifier = Modifier
+                                    .fillMaxSize()
+
+                            ) {
+
+                                Box(
+                                    modifier = Modifier
+                                        .align(Alignment.TopCenter)
+                                        .padding(start = 5.dp, end = 5.dp, top = 5.dp)
+                                ) {
+
+                                    Column() {
+
+
+                                        FellowScreen(
+                                            navController = navController,
+                                            idFellow = id,
+                                            path = "rating",
+                                            сache = сache,
+                                            activity = this@MainActivity
+                                        )
+
+                                    }
+                                }
+
                                 Box(
                                     modifier = Modifier
                                         .align(Alignment.BottomCenter),
@@ -211,13 +263,16 @@ class MainActivity : ComponentActivity() {
                                         .align(Alignment.TopCenter)
                                         .padding(start = 5.dp, end = 5.dp, top = 5.dp)
                                 ) {
+                                    Column() {
+                                        FellowScreen(
+                                            navController = navController,
+                                            idFellow = id,
+                                            path = "friends_list",
+                                            сache = сache,
+                                            activity = this@MainActivity
+                                        )
 
-                                    FellowScreen(
-                                        navController = navController,
-                                        idFellow = id,
-                                        path = "friends_list",
-                                        сache = сache
-                                    )
+                                    }
                                 }
                                 Box(
                                     modifier = Modifier
@@ -252,7 +307,8 @@ class MainActivity : ComponentActivity() {
                                     SlaveInfoScreen(
                                         navController = navController,
                                         idFellow = id,
-                                        сache = сache
+                                        сache = сache,
+                                        activity = this@MainActivity
                                     )
                                 }
                                 Box(

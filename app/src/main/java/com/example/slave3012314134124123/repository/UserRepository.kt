@@ -100,4 +100,28 @@ class UserRepository @Inject constructor(
         return Resource.Success(response)
     }
 
+    suspend fun postSetFetter(
+        authHeader: String,
+        requestBody: RequestBody
+    ): Resource<String>{
+        val response = try {
+            api.postSetFetter(authHeader, requestBody)
+        } catch (e: Exception){
+            return Resource.Error(e.message.toString())
+        }
+        return Resource.Success(response)
+    }
+
+    suspend fun postGetFellowSlaves(
+        authHeader: String,
+        requestBody: RequestBody
+    ): Resource<FellowSlaves>{
+        val response = try {
+            api.postGetFellowSlaves(authHeader, requestBody)
+        } catch (e: Exception){
+            return Resource.Error(e.message.toString())
+        }
+        return Resource.Success(response)
+    }
+
 }

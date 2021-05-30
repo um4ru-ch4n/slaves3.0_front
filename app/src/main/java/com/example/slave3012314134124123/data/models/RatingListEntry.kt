@@ -6,5 +6,9 @@ data class RatingListEntry(
     val photo : String,
     val slaves_count: Int,
     val id_user: Int,
-    //val master_id: Int
-)
+    val has_fetter: Boolean,
+    val fetter_type: String,
+    val fetter_time: String,
+    val fetter_duration: Int,
+
+    )

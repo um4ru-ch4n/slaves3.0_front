@@ -9,6 +9,10 @@ import timber.log.Timber
 @HiltAndroidApp
 class SlavesApplication : Application() {
 
+    /*TODO Сделать рейтинг убрать баг
+    *  dfСделать фио босса в профиле и текст фио слейва*/
+
+
     override fun onCreate() {
         super.onCreate()
         VK.initialize(this)
