@@ -1,67 +1,90 @@
 package com.example.slave3012314134124123.friendslist
 
+import android.app.Activity
+import android.app.ActivityManager
+import android.app.Application
+import android.content.Context
+import android.content.SharedPreferences
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.slave3012314134124123.MainActivity
 import com.example.slave3012314134124123.data.models.FriendsListEntry
-import com.example.slave3012314134124123.data.remote.UserApi
+import com.example.slave3012314134124123.data.remote.responses.FriendsList
+import com.example.slave3012314134124123.data.remote.responses.RatingList
 import com.example.slave3012314134124123.repository.UserRepository
-import com.example.slave3012314134124123.util.Constants
 import com.example.slave3012314134124123.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
-
 @HiltViewModel
 class FriendsListViewModel @Inject constructor(
-
-    private val repository: UserRepository
+    private val repository: UserRepository,
 ): ViewModel() {
-
 
     var friendsList = mutableStateOf<List<FriendsListEntry>>(listOf())
     var loadError = mutableStateOf("")
     var isLoading = mutableStateOf(false)
+    lateinit var result: Resource<FriendsList>
+    suspend fun loadFriendsPaginated(token: String) {
 
-    init {
-        loadFriendsPaginated()
-    }
+        isLoading.value = true
+
+        result =
+            repository.getFriendsList("AccessToken ${token}")
+        if(result.message == null)
+            result.message = "Загрузка списка друзей успешна"
+        else
+            result.message = "Произошла ошибка загрузки списка друзей"
 
 
-    fun loadFriendsPaginated() {
-        viewModelScope.launch {
-            isLoading.value = true
-            val result =
-                repository.getFriendsList("AccessToken ${Constants.TOKEN}")
-            Log.e("FRIEND_LIST", result.message.toString())
-            when (result) {
-                is Resource.Success -> {
 
-                    val friendsEntries = result.data!!.mapIndexed { index, entry ->
-                        val fio = entry.fio
-                        val photo = entry.photo
-                        val masterFio = entry.master_fio
-                        val slaveLvl = entry.slave_level
-                        val defLvl = entry.defender_level
-                        val silver = entry.purchase_price_sm
-                        val gold = entry.purchase_price_gm
-                        val id = entry.id
-                        val idMaster = entry.master_id
-                        FriendsListEntry(fio, photo, masterFio, slaveLvl,defLvl, silver, gold, id,idMaster)
-                    }
-                    loadError.value = ""
-                    isLoading.value = false
-                    friendsList.value += friendsEntries
 
+        when (result) {
+            is Resource.Success -> {
+
+                val friendsEntries = result.data!!.mapIndexed { index, entry ->
+                    val fio = entry.fio
+                    val photo = entry.photo
+                    val masterFio = entry.master_fio
+                    val slaveLvl = entry.slave_level
+                    val defLvl = entry.defender_level
+                    val silver = entry.purchase_price_sm
+                    val gold = entry.purchase_price_gm
+                    val id = entry.id
+                    val idMaster = entry.master_id
+                    val fetter_type = entry.fetter_type
+                    val fetter_time = entry.fetter_time
+                    val has_fetter = entry.has_fetter
+                    val fetter_duration = entry.fetter_duration
+                    FriendsListEntry(
+                        fio,
+                        photo,
+                        masterFio,
+                        slaveLvl,
+                        defLvl,
+                        silver,
+                        gold,
+                        id,
+                        idMaster,
+                        has_fetter,
+                        fetter_type,
+                        fetter_time,
+                        fetter_duration
+                    )
                 }
-               is Resource.Error -> {
-                    loadError.value = result.message!!
-                    isLoading.value = false
-                }
-           }
+                loadError.value = ""
+                isLoading.value = false
+                friendsList.value += friendsEntries
+
+            }
+            is Resource.Error -> {
+                loadError.value = result.message!!
+                isLoading.value = false
+            }
         }
     }
 }

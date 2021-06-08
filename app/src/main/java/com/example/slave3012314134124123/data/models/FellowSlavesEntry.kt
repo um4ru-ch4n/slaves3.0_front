@@ -1,6 +1,7 @@
 package com.example.slave3012314134124123.data.models
 
-data class SlavesListEntry(
+data class FellowSlavesEntry(
+
     val fio: String,
     val photo: String,
     val profit: Int,
@@ -13,5 +14,4 @@ data class SlavesListEntry(
     val has_fetter : Boolean,
     val fetter_duration : Int,
 
-
-)
+    )

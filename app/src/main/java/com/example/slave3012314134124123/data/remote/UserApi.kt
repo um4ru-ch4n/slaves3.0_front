@@ -52,5 +52,17 @@ interface UserApi {
         @Body requestBody: RequestBody
     ): String
 
+    @POST("user/buyfetter")
+    suspend fun postSetFetter(
+        @Header("Authorization") authHeader : String,
+        @Body requestBody: RequestBody
+    ): String
+
+    @POST("fellow/slaves")
+    suspend fun postGetFellowSlaves(
+        @Header("Authorization") authHeader : String,
+        @Body requestBody: RequestBody
+    ): FellowSlaves
+
 
 }

@@ -10,6 +10,10 @@ data class FriendsListEntry(
     val priceSilver: Int,
     val priceGold: Int,
     val id: Int,
-    val master_Id: Int
+    val master_Id: Int,
+    val has_fetter: Boolean,
+    val fetter_type: String,
+    val fetter_time: String,
+    val fetter_duration: Int,
 
 )

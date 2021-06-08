@@ -1,12 +1,12 @@
-package com.example.slave3012314134124123.skaveslist
+package com.example.slave3012314134124123.slaveslist
 
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.slave3012314134124123.data.models.SlavesListEntry
+import com.example.slave3012314134124123.data.remote.responses.SlavesList
 import com.example.slave3012314134124123.repository.UserRepository
-import com.example.slave3012314134124123.util.Constants
 import com.example.slave3012314134124123.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -24,17 +24,20 @@ class SlavesListViewModel  @Inject constructor(
     var loadError = mutableStateOf("")
     var isLoading = mutableStateOf(false)
 
-    init {
-        loadSlavesPaginated()
-    }
+    lateinit var result: Resource<SlavesList>
 
+    suspend fun loadSlavesPaginated(token2:String) {
 
-    fun loadSlavesPaginated() {
-        viewModelScope.launch {
             isLoading.value = true
-            val result =
-                repository.getSlavesList("AccessToken ${Constants.TOKEN}")
-            Log.e("SLAVE-LIST", result.message.toString())
+
+            result =
+                repository.getSlavesList("AccessToken ${token2}")
+
+            if(result.message == null)
+                result.message = "Загрузка списка рабов успешна"
+            else
+                result.message = "Произошла ошибка загрузки списка рабов"
+
             when (result) {
                 is Resource.Success -> {
 
@@ -46,8 +49,24 @@ class SlavesListViewModel  @Inject constructor(
                         val slaveLvl = entry.slave_level
                         val defLvl = entry.defender_level
                         val id = entry.id
+                        val fetter_type = entry.fetter_type
+                        val fetter_time = entry.fetter_time
+                        val has_fetter = entry.has_fetter
+                        val fetter_duration = entry.fetter_duration
 
-                        SlavesListEntry(fio, photo, profit, job_name, slaveLvl,defLvl,id)
+                        SlavesListEntry(
+                            fio,
+                            photo,
+                            profit,
+                            job_name,
+                            slaveLvl,
+                            defLvl,
+                            id,
+                            fetter_type,
+                            fetter_time,
+                            has_fetter,
+                            fetter_duration
+                        )
                     }
                     loadError.value = ""
                     isLoading.value = false
@@ -57,8 +76,8 @@ class SlavesListViewModel  @Inject constructor(
                 is Resource.Error -> {
                     loadError.value = result.message!!
                     isLoading.value = false
+
                 }
             }
-        }
     }
 }

@@ -4,10 +4,10 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.example.slave3012314134124123.data.remote.responses.Fellow
 import com.example.slave3012314134124123.repository.UserRepository
-import com.example.slave3012314134124123.util.Constants.TOKEN
 import com.example.slave3012314134124123.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
 import javax.inject.Inject
@@ -20,69 +20,81 @@ class FellowViewModel @Inject constructor(
 )  : ViewModel() {
 
 
-    suspend fun loadFellow(token: String, id: Int):Resource<Fellow> {
-
-        val jsonObject = JSONObject()
-        jsonObject.put("user_id", id)
-        val jsonObjectString = jsonObject.toString()
-
-        val fellowBodyRequest =
-            jsonObjectString.toRequestBody("application/json".toMediaTypeOrNull())
+    suspend fun loadFellow(token: String, fellowBodyRequest: RequestBody):Resource<Fellow> {
 
         val result = repository.postFellow(
-            "AccessToken ${TOKEN}",
+            "AccessToken ${token}",
             fellowBodyRequest
         )
-        Log.e("LOAD-FELLOW", result.message.toString())
+
+        if(result.message == null)
+            result.message = "Загрузка профиля пользователя успешна"
+        else
+            result.message = "Произошла ошибка загрузки профиля пользователя"
+
+
+        //Log.e("LOAD-FELLOW", result.message.toString())
         return result
     }
 
-    suspend fun buyFellow(token: String, id: Int):Resource<String>{
-        val jsonObject = JSONObject()
-        jsonObject.put("slave_id", id)
-        val jsonObjectString = jsonObject.toString()
-
-        val buuBodyRequest =
-            jsonObjectString.toRequestBody("application/json".toMediaTypeOrNull())
-
+    suspend fun buyFellow(token: String, buuBodyRequest: RequestBody):Resource<String>{
         val result = repository.postBuy(
-            "AccessToken ${TOKEN}",
+            "AccessToken ${token}",
             buuBodyRequest
         )
-        Log.e("BUY", result.message.toString())
+
+        if(result.message == null)
+            result.message = "Покупка прошла успешно"
+        else
+            result.message = "В покупке отказано"
+
+        //Log.e("BUY", result.message.toString())
         return result
     }
 
-    suspend fun saleFellow(token: String, id: Int):Resource<String>{
-        val jsonObject = JSONObject()
-        jsonObject.put("slave_id", id)
-        val jsonObjectString = jsonObject.toString()
+    suspend fun saleFellow(token: String, buuBodyRequest: RequestBody):Resource<String>{
 
-        val buuBodyRequest =
-            jsonObjectString.toRequestBody("application/json".toMediaTypeOrNull())
 
         val result = repository.postSale(
-            "AccessToken ${TOKEN}",
+            "AccessToken ${token}",
             buuBodyRequest
         )
-        Log.e("SALE", result.message.toString())
+        if(result.message == null)
+            result.message = "Продажа прошла успешно"
+        else
+            result.message = "Ошибка продажи"
+
+        //Log.e("SALE", result.message.toString())
         return result
     }
 
-    suspend fun setJob(token: String, id: Int, job:String):Resource<String>{
-        val jsonObject = JSONObject()
-        jsonObject.put("job_name", job)
-        jsonObject.put("slave_id", id)
-        val jsonObjectString = jsonObject.toString()
-
-        val buuBodyRequest =
-            jsonObjectString.toRequestBody("application/json".toMediaTypeOrNull())
-
+    suspend fun setJob(token: String, buuBodyRequest: RequestBody):Resource<String>{
         val result = repository.postSetJob(
-            "AccessToken ${TOKEN}",
+            "AccessToken ${token}",
             buuBodyRequest
         )
-        Log.e("SET-JOB", result.message.toString())
+        if(result.message == null)
+            result.message = "Работа назначена"
+        else
+            result.message = "Ошибка назначения работы"
+        //Log.e("SET-JOB", result.message.toString())
+        return result
+    }
+
+
+
+    suspend fun setFetter(token: String, buuBodyRequest:RequestBody):Resource<String>{
+
+
+        val result = repository. postSetFetter(
+            "AccessToken ${token}",
+            buuBodyRequest
+        )
+        if(result.message == null)
+            result.message = "Цепи установлены"
+        else
+            result.message = "Ошибка уставноки цепей"
+        //Log.e("SET-FETTER", "I: ${result.message.toString()}")
         return result
     }
 
