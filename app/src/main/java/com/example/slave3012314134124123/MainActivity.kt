@@ -1,7 +1,6 @@
 package com.example.slave3012314134124123
 
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -23,11 +22,9 @@ import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.*
-import androidx.navigation.findNavController
 import com.example.slave3012314134124123.auth.AuthScreen
 import com.example.slave3012314134124123.data.models.Сache
 import com.example.slave3012314134124123.fellow.FellowScreen
-import com.example.slave3012314134124123.fellowslaves.FellowSlavesListScreen
 import com.example.slave3012314134124123.friendslist.FriendsListScreen
 import com.example.slave3012314134124123.navigationbar.NavigationBarScreen
 import com.example.slave3012314134124123.ratinglist.RatingListScreen
@@ -57,9 +54,6 @@ class MainActivity : ComponentActivity() {
                 // A surface container using the 'background' color from the theme
                 Surface(color = MaterialTheme.colors.background) {
 
-                    //qwe()
-                    //prefs =
-                    //saveToken("")
                     prefs = getSharedPreferences("token", Context.MODE_PRIVATE)
                     Log.e("Save token", "${prefs.getString("token", "")}")
 
@@ -307,7 +301,7 @@ class MainActivity : ComponentActivity() {
                                     SlaveInfoScreen(
                                         navController = navController,
                                         idFellow = id,
-                                        сache = сache,
+                                        cache = сache,
                                         activity = this@MainActivity
                                     )
                                 }

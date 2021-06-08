@@ -18,13 +18,13 @@ class UserViewModel @Inject constructor(
     private  val repository: UserRepository
 ) : ViewModel(){
 
-
-
-    suspend fun loadUser(token:String):Resource<User>{
+    suspend fun loadUser(token:String):Resource<User> {
         val result = repository.getUser("AccessToken ${token}")
-        Log.e("USER", result.message.toString())
+        if (result.message == null) {
+            result.message = "Авторизация успешна"
+        } else {
+            result.message = "Ошибка авторизации"
+        }
         return result
-
     }
-
 }

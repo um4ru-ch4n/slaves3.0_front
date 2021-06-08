@@ -40,6 +40,9 @@ import com.example.slave3012314134124123.slaveslist.TextFetter
 import com.example.slave3012314134124123.util.Resource
 import com.google.accompanist.coil.CoilImage
 import kotlinx.coroutines.*
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody.Companion.toRequestBody
+import org.json.JSONObject
 import java.time.Duration
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -55,8 +58,15 @@ fun FellowScreen (
     navController: NavController
 ) {
 
+    val jsonObject = JSONObject()
+    jsonObject.put("user_id", idFellow!!)
+    val jsonObjectString = jsonObject.toString()
+
+    val fellowBodyRequest =
+        jsonObjectString.toRequestBody("application/json".toMediaTypeOrNull())
+
     val userInfo = produceState<Resource<Fellow>>(initialValue = Resource.Loading()) {
-        value = viewModel.loadFellow(сache.token!!, idFellow!!)
+        value = viewModel.loadFellow(сache.token!!, fellowBodyRequest)
     }
     val (showJob, setShowDialog) = remember { mutableStateOf(false) }
     val (showRoute, setShowDialogRoute) = remember { mutableStateOf(false) }
@@ -225,8 +235,17 @@ fun FellowScreen (
                 if (сache.user_id == userInfo.value.data?.master_id && сache.user_id != userInfo.value.data?.id) {
                     Button(onClick = {
                         runBlocking {
+
+
+                            val jsonObject = JSONObject()
+                            jsonObject.put("slave_id", userInfo.value.data!!.id)
+                            val jsonObjectString = jsonObject.toString()
+
+                            val buuBodyRequest =
+                                jsonObjectString.toRequestBody("application/json".toMediaTypeOrNull())
+
                             val stringInfo =
-                                viewModel.saleFellow(сache.token!!, userInfo.value.data!!.id)
+                                viewModel.saleFellow(сache.token!!,buuBodyRequest)
                                     .toString()
 
                         }
@@ -271,11 +290,19 @@ fun FellowScreen (
                     }
                 } else if (сache.user_id != userInfo.value.data?.id) {
                     Button(onClick = {
+                        val jsonObject = JSONObject()
+                        jsonObject.put("slave_id", userInfo.value.data!!.id)
+                        val jsonObjectString = jsonObject.toString()
+
+                        val buuBodyRequest =
+                            jsonObjectString.toRequestBody("application/json".toMediaTypeOrNull())
 
                         runBlocking {
+
+
                             val stringInfo = viewModel.buyFellow(
                                 сache.token!!,
-                                userInfo.value.data!!.id
+                                buuBodyRequest
                             ).message.toString()
                         }
                         navController.navigate(path,)

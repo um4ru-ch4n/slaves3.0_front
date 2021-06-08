@@ -15,6 +15,7 @@ import androidx.compose.material.Switch
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
@@ -34,6 +35,7 @@ import coil.request.ImageRequest
 import com.example.slave3012314134124123.data.models.Сache
 import com.example.slave3012314134124123.data.models.SlavesListEntry
 import com.google.accompanist.coil.CoilImage
+import kotlinx.coroutines.runBlocking
 import java.time.Duration
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -60,15 +62,22 @@ fun SlavesList(
 
 ){
 
-    viewModel.token2.value = сache.token!!
 
+    val (loadList, setLoadList) = remember { mutableStateOf(true) }
+    if(loadList) {
+        runBlocking {
+            viewModel.loadSlavesPaginated(сache.token!!)
+        }
+        setLoadList(false)
+    }
     val slavesList by remember { viewModel.slavesList}
     val loadError by remember { viewModel.loadError}
     val isLoading by remember { viewModel.isLoading}
 
 
 
-    Log.e("TOKEN VM-SL", "V ${viewModel.token2.value}")
+
+    //Log.e("TOKEN VM-SL", "V ${viewModel.token2.value}")
 
     LazyColumn(
         contentPadding = PaddingValues(0.dp),
@@ -80,9 +89,9 @@ fun SlavesList(
 
 
         items(slavesList.size){
-            if(it >= slavesList.size){
-                viewModel.loadSlavesPaginated()
-            }
+//            if(it >= slavesList.size){
+//                viewModel.loadSlavesPaginated()
+//            }
             Log.e("FIO", slavesList[it].fio)
             SlavesRow(rowIndex = it, entries = slavesList, navController = navController, maxSize = slavesList.size)
 

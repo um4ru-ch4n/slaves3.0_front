@@ -14,6 +14,7 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -34,6 +35,7 @@ import com.example.slave3012314134124123.data.models.RatingListEntry
 import com.example.slave3012314134124123.friendslist.FriendsListViewModel
 import com.example.slave3012314134124123.slaveslist.TextFetter
 import com.google.accompanist.coil.CoilImage
+import kotlinx.coroutines.runBlocking
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -58,10 +60,17 @@ fun RatingList(
     viewModel: RatingListViewModel = hiltNavGraphViewModel()
 
 ){
+    val (loadList, setLoadList) = remember { mutableStateOf(true) }
+    if(loadList) {
+        runBlocking {
+            viewModel.loadRatingListPaginated(сache.token!!)
+        }
+        setLoadList(false)
+    }
     val ratingList by remember { viewModel.ratingList}
     val loadError by remember { viewModel.loadError}
     val isLoading by remember { viewModel.isLoading}
-    viewModel.token2.value = сache.token!!
+
     LazyColumn(
         contentPadding = PaddingValues(10.dp)
     ){
@@ -73,9 +82,9 @@ fun RatingList(
 
             Log.e("RATING-SIZE",ratingList.size.toString() )
 
-            if(it >= ratingList.size){
-                viewModel.loadRatingListPaginated(сache.token!!)
-            }
+//            if(it >= ratingList.size){
+//                viewModel.loadRatingListPaginated(сache.token!!)
+//            }
             Log.e("FIO", ratingList[it].fio)
             RatingRow(rowIndex = it, entries = ratingList, navController = navController, сache = сache, items = it)
 

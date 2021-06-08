@@ -13,6 +13,7 @@ import com.example.slave3012314134124123.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
 import javax.inject.Inject
@@ -28,31 +29,20 @@ class FellowSlavesViewModel  @Inject constructor(
 
     lateinit var result: Resource<FellowSlaves>
 
-    var token2 = mutableStateOf<String>("")
+
     var user_id = mutableStateOf(0)
 
 
 
-    fun loadFellowSlavesPaginated() {
-        viewModelScope.launch {
+    suspend fun loadFellowSlavesPaginated(token:String, buuBodyRequest: RequestBody) {
             isLoading.value = true
 
-            val jsonObject = JSONObject()
-            jsonObject.put("user_id", user_id.value)
-            val jsonObjectString = jsonObject.toString()
-
-            val buuBodyRequest =
-                jsonObjectString.toRequestBody("application/json".toMediaTypeOrNull())
-
-            Log.e("FELLOW-SLAVE-LIST ID", "ID: ${user_id.value}")
-            Log.e("FELLOW-SLAVE-LIST TOKEN", "T: ${token2.value}")
-
             result =
-                repository.postGetFellowSlaves("AccessToken ${token2.value}",buuBodyRequest)
-
-            Log.e("FELLOW-SLAVE-LIST SIZE", "size ${result.data?.size}")
-
-            Log.e("FELLOW-SLAVE-LIST", result.message.toString())
+                repository.postGetFellowSlaves("AccessToken ${token}",buuBodyRequest)
+            if(result.message == null)
+                result.message = "Загрузка списка рабов успешна"
+            else
+                result.message = "Произошла ошибка загрузки списка рабов"
 
 
             when (result) {
@@ -83,6 +73,6 @@ class FellowSlavesViewModel  @Inject constructor(
                     isLoading.value = false
                 }
             }
-        }
+
     }
 }

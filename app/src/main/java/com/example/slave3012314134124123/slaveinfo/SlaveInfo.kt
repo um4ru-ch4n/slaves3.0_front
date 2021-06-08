@@ -22,7 +22,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import androidx.constraintlayout.solver.Cache
 import androidx.hilt.navigation.compose.hiltNavGraphViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.navigate
@@ -36,11 +35,12 @@ import com.example.slave3012314134124123.slaveslist.TextFetter
 import com.example.slave3012314134124123.util.Resource
 import com.google.accompanist.coil.CoilImage
 import kotlinx.coroutines.runBlocking
-import java.sql.Time
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody.Companion.toRequestBody
+import org.json.JSONObject
 import java.time.Duration
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-import java.time.temporal.TemporalAccessor
 
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -48,12 +48,22 @@ import java.time.temporal.TemporalAccessor
 fun SlaveInfoScreen(
     viewModel: FellowViewModel = hiltNavGraphViewModel(),
     idFellow: Int?,
-    сache: Сache,
+    cache: Сache,
     activity: MainActivity,
     navController: NavController
 ) {
+
+    val jsonObject = JSONObject()
+    jsonObject.put("user_id", idFellow!!)
+    val jsonObjectString = jsonObject.toString()
+
+    val fellowBodyRequest =
+        jsonObjectString.toRequestBody("application/json".toMediaTypeOrNull())
+
+
+
     val slaveInfo = produceState<Resource<Fellow>>(initialValue = Resource.Loading()) {
-        value = viewModel.loadFellow(сache.token!!, idFellow!!)
+        value = viewModel.loadFellow(cache.token!!, fellowBodyRequest)
     }
 
 
@@ -63,7 +73,7 @@ fun SlaveInfoScreen(
     val (showRoute, setShowDialogRoute) = remember { mutableStateOf(false) }
     Surface(
         shape = CutCornerShape(10.dp),
-        modifier = androidx.compose.ui.Modifier
+        modifier = Modifier
             .shadow(4.dp, CutCornerShape(10.dp))
             .fillMaxWidth()
             .fillMaxHeight()
@@ -187,7 +197,7 @@ fun SlaveInfoScreen(
                                     fontFamily = FontFamily.SansSerif,
                                     fontSize = 14.sp
                                 )
-                                if (сache.user_id == slaveInfo.value.data?.master_id) {
+                                if (cache.user_id == slaveInfo.value.data?.master_id) {
                                     MoneyStr(
                                         silver = it.sale_price_sm,
                                         gold = it.sale_price_gm,
@@ -221,8 +231,17 @@ fun SlaveInfoScreen(
                 //if (cash.user_id == slaveInfo.value.data?.master_id) {
                 Button(onClick = {
                     runBlocking {
+
+                        val jsonObject = JSONObject()
+                        jsonObject.put("slave_id",slaveInfo.value.data!!.id)
+                        val jsonObjectString = jsonObject.toString()
+
+                        val buuBodyRequest =
+                            jsonObjectString.toRequestBody("application/json".toMediaTypeOrNull())
+
+
                         val stringInfo =
-                            viewModel.saleFellow(сache.token!!, slaveInfo.value.data!!.id)
+                            viewModel.saleFellow(cache.token!!,buuBodyRequest )
                                 .toString()
                         Log.e("BUY", stringInfo)
 
@@ -361,7 +380,7 @@ fun SlaveInfoScreen(
             }
 
             FullScreenDialog(
-                сache,
+                cache,
                 navController,
                 viewModel,
                 slaveInfo.value.data?.id,
@@ -370,7 +389,7 @@ fun SlaveInfoScreen(
             )
 
             FullScreenDialogRoute(
-                сache,
+                cache,
                 navController,
                 viewModel,
                 slaveInfo.value.data?.id,
@@ -453,9 +472,21 @@ fun FullScreenDialog(сache: Сache, navController: NavController, viewModel: Fe
                             onClick = {
                                 setShowDialog(false)
                                 Log.e("SET JOB1", "work")
+
+
                                 runBlocking {
+
+                                    val jsonObject = JSONObject()
+                                    jsonObject.put("job_name", jobText)
+                                    jsonObject.put("slave_id", id!!)
+                                    val jsonObjectString = jsonObject.toString()
+
+                                    val buuBodyRequest =
+                                        jsonObjectString.toRequestBody("application/json".toMediaTypeOrNull())
+
+
                                     val stringInfo =
-                                        viewModel.setJob(сache.token!!, id!!, jobText)
+                                        viewModel.setJob(сache.token!!,buuBodyRequest)
                                             .toString()
                                     Log.e("SET JOB2", stringInfo)
 
@@ -533,8 +564,18 @@ fun FullScreenDialogRoute(сache: Сache, navController: NavController, viewMode
                                     runBlocking {
                                         setShowDialogRoute(false)
                                         runBlocking {
+
+                                            val jsonObject = JSONObject()
+                                            jsonObject.put("fetter_type", "common")
+                                            jsonObject.put("slave_id", id!!)
+                                            val jsonObjectString = jsonObject.toString()
+
+                                            val buuBodyRequest =
+                                                jsonObjectString.toRequestBody("application/json".toMediaTypeOrNull())
+
+
                                             val stringInfo =
-                                                viewModel.setFetter(сache.token!!, id!!, "common")
+                                                viewModel.setFetter(сache.token!!,buuBodyRequest)
                                                     .toString()
                                             Log.e("SET COMMON FETTER: ", stringInfo)
 
@@ -570,8 +611,19 @@ fun FullScreenDialogRoute(сache: Сache, navController: NavController, viewMode
                                 onClick = {
                                     setShowDialogRoute(false)
                                     runBlocking {
+
+
+                                        val jsonObject = JSONObject()
+                                        jsonObject.put("fetter_type", "uncommon")
+                                        jsonObject.put("slave_id", id!!)
+                                        val jsonObjectString = jsonObject.toString()
+
+                                        val buuBodyRequest =
+                                            jsonObjectString.toRequestBody("application/json".toMediaTypeOrNull())
+
+
                                         val stringInfo =
-                                            viewModel.setFetter(сache.token!!, id!!, "uncommon")
+                                            viewModel.setFetter(сache.token!!, buuBodyRequest)
                                                 .toString()
                                         Log.e("SET uncommon FETTER: ", stringInfo)
 
@@ -604,8 +656,22 @@ fun FullScreenDialogRoute(сache: Сache, navController: NavController, viewMode
                                 onClick = {
                                     setShowDialogRoute(false)
                                     runBlocking {
+
+
+
+                                        val jsonObject = JSONObject()
+                                        jsonObject.put("fetter_type",  "rare")
+                                        jsonObject.put("slave_id", id!!)
+                                        val jsonObjectString = jsonObject.toString()
+
+                                        val buuBodyRequest =
+                                            jsonObjectString.toRequestBody("application/json".toMediaTypeOrNull())
+
+
+
+
                                         val stringInfo =
-                                            viewModel.setFetter(сache.token!!, id!!, "rare")
+                                            viewModel.setFetter(сache.token!!,buuBodyRequest)
                                                 .toString()
                                         Log.e("SET rare FETTER: ", stringInfo)
 
@@ -639,8 +705,26 @@ fun FullScreenDialogRoute(сache: Сache, navController: NavController, viewMode
                                 onClick = {
                                     setShowDialogRoute(false)
                                     runBlocking {
+
+
+
+
+
+
+                                        val jsonObject = JSONObject()
+                                        jsonObject.put("fetter_type",  "epic")
+                                        jsonObject.put("slave_id", id!!)
+                                        val jsonObjectString = jsonObject.toString()
+
+                                        val buuBodyRequest =
+                                            jsonObjectString.toRequestBody("application/json".toMediaTypeOrNull())
+
+
+
+
+
                                         val stringInfo =
-                                            viewModel.setFetter(сache.token!!, id!!, "epic")
+                                            viewModel.setFetter(сache.token!!, buuBodyRequest )
                                                 .toString()
                                         Log.e("SET epic FETTER: ", stringInfo)
 
@@ -674,8 +758,19 @@ fun FullScreenDialogRoute(сache: Сache, navController: NavController, viewMode
                                 onClick = {
                                     setShowDialogRoute(false)
                                     runBlocking {
+
+
+                                        val jsonObject = JSONObject()
+                                        jsonObject.put("fetter_type",  "immortal")
+                                        jsonObject.put("slave_id", id!!)
+                                        val jsonObjectString = jsonObject.toString()
+
+                                        val buuBodyRequest =
+                                            jsonObjectString.toRequestBody("application/json".toMediaTypeOrNull())
+
+
                                         val stringInfo =
-                                            viewModel.setFetter(сache.token!!, id!!, "immortal")
+                                            viewModel.setFetter(сache.token!!, buuBodyRequest )
                                                 .toString()
                                         Log.e("SET immortal FETTER: ", stringInfo)
                                     }
@@ -712,8 +807,19 @@ fun FullScreenDialogRoute(сache: Сache, navController: NavController, viewMode
                                 onClick = {
                                     setShowDialogRoute(false)
                                     runBlocking {
+
+
+                                        val jsonObject = JSONObject()
+                                        jsonObject.put("fetter_type",  "legendary")
+                                        jsonObject.put("slave_id", id!!)
+                                        val jsonObjectString = jsonObject.toString()
+
+                                        val buuBodyRequest =
+                                            jsonObjectString.toRequestBody("application/json".toMediaTypeOrNull())
+
+
                                         val stringInfo =
-                                            viewModel.setFetter(сache.token!!, id!!, "legendary")
+                                            viewModel.setFetter(сache.token!!,buuBodyRequest )
                                                 .toString()
                                         Log.e("SET legendary FETTER: ", stringInfo)
                                     }

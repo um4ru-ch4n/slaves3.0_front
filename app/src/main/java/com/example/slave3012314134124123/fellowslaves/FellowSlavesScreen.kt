@@ -38,6 +38,10 @@ import com.example.slave3012314134124123.data.models.Сache
 import com.example.slave3012314134124123.data.models.SlavesListEntry
 import com.example.slave3012314134124123.slaveslist.TextFetter
 import com.google.accompanist.coil.CoilImage
+import kotlinx.coroutines.runBlocking
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody.Companion.toRequestBody
+import org.json.JSONObject
 import java.time.Duration
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -66,12 +70,23 @@ fun FellowSlavesList(
 
 ){
     val (loadList, setLoadList) = remember { mutableStateOf(true) }
-    viewModel.token2.value = сache.token!!
+
     viewModel.user_id.value = сache.fellow_id2!!
 
 
+    val jsonObject = JSONObject()
+    jsonObject.put("user_id", сache.fellow_id2!!)
+    val jsonObjectString = jsonObject.toString()
+
+    val buuBodyRequest =
+        jsonObjectString.toRequestBody("application/json".toMediaTypeOrNull())
+
+
+
     if(loadList) {
-        viewModel.loadFellowSlavesPaginated()
+        runBlocking {
+            viewModel.loadFellowSlavesPaginated(сache.token!!,buuBodyRequest)
+        }
         setLoadList(false)
     }
     val slavesList by remember { viewModel.slavesList}
@@ -89,9 +104,9 @@ fun FellowSlavesList(
         Log.e("FSS", "SIZE: ${itemCount}")
 
         items(slavesList.size){
-            if(it >= slavesList.size){
-                viewModel.loadFellowSlavesPaginated()
-            }
+//            if(it >= slavesList.size){
+//                viewModel.loadFellowSlavesPaginated()
+//            }
             FellowSlavesRow(rowIndex = it, entries = slavesList, navController = navController, maxSize = slavesList.size, сache = сache)
         }
         items(1)

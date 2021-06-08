@@ -30,6 +30,7 @@ import com.example.slave3012314134124123.data.models.Сache
 import com.example.slave3012314134124123.data.models.FriendsListEntry
 import com.example.slave3012314134124123.slaveslist.TextFetter
 import com.google.accompanist.coil.CoilImage
+import kotlinx.coroutines.runBlocking
 
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -54,11 +55,17 @@ fun FriendsList(
     viewModel: FriendsListViewModel = hiltNavGraphViewModel()
 
 ){
-
+    val (loadList, setLoadList) = remember { mutableStateOf(true) }
+    if(loadList) {
+        runBlocking {
+            viewModel.loadFriendsPaginated(сache.token!!)
+        }
+        setLoadList(false)
+    }
     val friendsList by remember { viewModel.friendsList}
     val loadError by remember { viewModel.loadError}
     val isLoading by remember { viewModel.isLoading}
-    viewModel.token2.value = сache.token!!
+
 //    var token = remember {
 //      viewModel.token
 //    }
@@ -70,9 +77,9 @@ fun FriendsList(
         contentPadding = PaddingValues(10.dp)
     ){
         items(friendsList.size){
-            if(it >= friendsList.size){
-                viewModel.loadFriendsPaginated(сache.token!!)
-            }
+//            if(it >= friendsList.size){
+//                viewModel.loadFriendsPaginated(сache.token!!)
+//            }
             FriendsRow(rowIndex = it, entries = friendsList, navController = navController, сache = сache )
 
         }

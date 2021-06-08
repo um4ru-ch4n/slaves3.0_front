@@ -26,33 +26,17 @@ class SlavesListViewModel  @Inject constructor(
 
     lateinit var result: Resource<SlavesList>
 
-    var token2 = mutableStateOf<String>("")
+    suspend fun loadSlavesPaginated(token2:String) {
 
-    init {
-        loadSlavesPaginated()
-    }
-
-
-    fun loadSlavesPaginated() {
-        viewModelScope.launch {
             isLoading.value = true
 
             result =
-                repository.getSlavesList("AccessToken ${token2.value}")
-            result =
-                repository.getSlavesList("AccessToken ${token2.value}")
-            Log.e("SLAVE-LIST", result.message.toString())
+                repository.getSlavesList("AccessToken ${token2}")
 
-            Log.e("SLAVE-LIST SIZE", "size ${result.data?.size}")
-
-
-            //result =
-            //  repository.getSlavesList("AccessToken ${token2.value}")
-
-
-            Log.e("SLAVE-LIST", result.message.toString())
-
-            Log.e("SLAVE-LIST SIZE", "size ${result.data?.size}")
+            if(result.message == null)
+                result.message = "Загрузка списка рабов успешна"
+            else
+                result.message = "Произошла ошибка загрузки списка рабов"
 
             when (result) {
                 is Resource.Success -> {
@@ -70,7 +54,19 @@ class SlavesListViewModel  @Inject constructor(
                         val has_fetter = entry.has_fetter
                         val fetter_duration = entry.fetter_duration
 
-                        SlavesListEntry(fio, photo, profit, job_name, slaveLvl, defLvl, id,fetter_type,fetter_time,has_fetter,fetter_duration)
+                        SlavesListEntry(
+                            fio,
+                            photo,
+                            profit,
+                            job_name,
+                            slaveLvl,
+                            defLvl,
+                            id,
+                            fetter_type,
+                            fetter_time,
+                            has_fetter,
+                            fetter_duration
+                        )
                     }
                     loadError.value = ""
                     isLoading.value = false
@@ -80,8 +76,8 @@ class SlavesListViewModel  @Inject constructor(
                 is Resource.Error -> {
                     loadError.value = result.message!!
                     isLoading.value = false
+
                 }
             }
-        }
     }
 }
